@@ -1,0 +1,11 @@
+html, body, :global(#root) {
+  height: 100px;
+}
+
+:global(.operation) > a {
+  margin-right: 1em;
+}
+
+:global(.logo) {
+  height: 64px;
+}
