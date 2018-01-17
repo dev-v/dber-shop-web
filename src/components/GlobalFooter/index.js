@@ -1,11 +1,22 @@
-import React from 'react';
-import classNames from 'classnames';
+import {Icon} from 'antd';
 import styles from './index.less';
 
-export default ({ className, links, copyright }) => {
-  const clsString = classNames(styles.globalFooter, className);
+export default () => {
+
+  const links = [
+    {
+      title: '帮助',
+      href: '',
+    }, {
+      title: '隐私',
+      href: '',
+    }, {
+      title: '条款',
+      href: '',
+    }];
+
   return (
-    <div className={clsString}>
+    <div className={`${styles.globalFooter} ${styles.footer}`}>
       {
         links && (
           <div className={styles.links}>
@@ -21,7 +32,11 @@ export default ({ className, links, copyright }) => {
           </div>
         )
       }
-      {copyright && <div className={styles.copyright}>{copyright}</div>}
+      <div className={styles.copyright}>
+        <div>Copyright <Icon type="copyright"/> 2018
+          动吧（成都）信息网络技术有限责任公司
+        </div>
+      </div>
     </div>
   );
 };

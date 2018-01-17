@@ -16,9 +16,12 @@
     "dva": "^2.1.0",
     "dva-loading": "^1.0.4",
     "less-vars-to-js": "^1.2.1",
+    "moment": "^2.20.1",
     "mprogress": "^0.1.1",
     "nprogress": "^0.2.0",
     "react": "^15.4.0",
+    "react-amap": "^1.2.0",
+    "react-amap-plugin-geolocation": "^0.0.2",
     "react-document-title": "^2.0.3",
     "react-dom": "^15.4.0",
     "uprogress": "^1.0.1"

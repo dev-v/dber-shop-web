@@ -9,3 +9,17 @@ html, body, :global(#root) {
 :global(.logo) {
   height: 64px;
 }
+
+:global(.captcha) {
+  height: 39px;
+  position: relative;
+  top: -2px;
+}
+
+:global(.icon) {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}

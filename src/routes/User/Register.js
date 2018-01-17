@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'dva';
-import { routerRedux, Link } from 'dva/router';
-import { Form, Input, Button, Select, Row, Col, Popover, Progress } from 'antd';
+import React, {Component} from 'react';
+import {connect} from 'dva';
+import {routerRedux, Link} from 'dva/router';
+import {Form, Input, Button, Select, Row, Col, Popover, Progress, message} from 'antd';
 import styles from './Register.less';
+import {shopService} from "../../utils/request";
 
 const FormItem = Form.Item;
-const { Option } = Select;
+const {Option} = Select;
 const InputGroup = Input.Group;
 
 const passwordStatusMap = {
@@ -20,43 +21,29 @@ const passwordProgressMap = {
   pool: 'exception',
 };
 
-@connect(state => ({
-  register: state.register,
-}))
-@Form.create()
-export default class Register extends Component {
+class Register extends Component {
   state = {
     count: 0,
     confirmDirty: false,
     visible: false,
     help: '',
-    prefix: '86',
+    captchUrl: undefined,
+    registing: false,
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.register.status === 'ok') {
-      this.props.dispatch(routerRedux.push('/user/register-result'));
-    }
+  componentWillMount() {
+    this.getCaptcha();
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  onGetCaptcha = () => {
-    let count = 59;
-    this.setState({ count });
-    this.interval = setInterval(() => {
-      count -= 1;
-      this.setState({ count });
-      if (count === 0) {
-        clearInterval(this.interval);
-      }
-    }, 1000);
+  getCaptcha = () => {
+    this.setState({
+      ...this.state,
+      captchUrl: shopService.getUrl('login/captcha?' + Math.random()),
+    });
   };
 
   getPasswordStatus = () => {
-    const { form } = this.props;
+    const {form} = this.props;
     const value = form.getFieldValue('password');
     if (value && value.length > 9) {
       return 'ok';
@@ -67,28 +54,45 @@ export default class Register extends Component {
     return 'pool';
   };
 
+  setRegisting = (registing) => {
+    this.setState({
+      ...this.state,
+      registing,
+    });
+  };
+
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields({ force: true }, (err, values) => {
+    this.props.form.validateFields({force: true}, (err, data) => {
       if (!err) {
+        this.setRegisting(true);
         this.props.dispatch({
-          type: 'register/submit',
-          payload: {
-            ...values,
-            prefix: this.state.prefix,
-          },
+          type: 'global/regist',
+          data,
+        }).then((result) => {
+          this.setRegisting(false);
+          if (result.code == 200) {
+            message.info('注册成功，即将跳转登录界面！');
+            setTimeout(() => {
+              location.pathname = '/user/login';
+            }, 2000)
+          } else {
+            message.error(result.msg);
+          }
+        }).finally(() => {
+          this.getCaptcha();
         });
       }
     });
   };
 
   handleConfirmBlur = (e) => {
-    const { value } = e.target;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+    const {value} = e.target;
+    this.setState({confirmDirty: this.state.confirmDirty || !!value});
   };
 
   checkConfirm = (rule, value, callback) => {
-    const { form } = this.props;
+    const {form} = this.props;
     if (value && value !== form.getFieldValue('password')) {
       callback('两次输入的密码不匹配!');
     } else {
@@ -115,23 +119,17 @@ export default class Register extends Component {
       if (value.length < 6) {
         callback('error');
       } else {
-        const { form } = this.props;
+        const {form} = this.props;
         if (value && this.state.confirmDirty) {
-          form.validateFields(['confirm'], { force: true });
+          form.validateFields(['confirm'], {force: true});
         }
         callback();
       }
     }
   };
 
-  changePrefix = (value) => {
-    this.setState({
-      prefix: value,
-    });
-  };
-
   renderPasswordProgress = () => {
-    const { form } = this.props;
+    const {form} = this.props;
     const value = form.getFieldValue('password');
     const passwordStatus = this.getPasswordStatus();
     return value && value.length ? (
@@ -148,39 +146,39 @@ export default class Register extends Component {
   };
 
   render() {
-    const { form, register } = this.props;
-    const { getFieldDecorator } = form;
-    const { count, prefix } = this.state;
+    const {form} = this.props;
+    const {getFieldDecorator} = form;
+    const {count} = this.state;
     return (
       <div className={styles.main}>
-        <h3>注册</h3>
+        <h3>账号注册</h3>
         <Form onSubmit={this.handleSubmit}>
           <FormItem>
-            {getFieldDecorator('mail', {
+            {getFieldDecorator('name', {
               rules: [
                 {
                   required: true,
-                  message: '请输入邮箱地址！',
+                  message: '请输入昵称！',
                 },
                 {
-                  type: 'email',
-                  message: '邮箱地址格式错误！',
+                  max: 50,
+                  message: '昵称长度不能超过50个字符！'
                 },
               ],
-            })(<Input size="large" placeholder="邮箱" />)}
+            })(<Input size="large" placeholder="昵称"/>)}
           </FormItem>
           <FormItem help={this.state.help}>
             <Popover
               content={
-                <div style={{ padding: '4px 0' }}>
+                <div style={{padding: '4px 0'}}>
                   {passwordStatusMap[this.getPasswordStatus()]}
                   {this.renderPasswordProgress()}
-                  <div style={{ marginTop: 10 }}>
+                  <div style={{marginTop: 10}}>
                     请至少输入 6 个字符。请不要使用容易被猜到的密码。
                   </div>
                 </div>
               }
-              overlayStyle={{ width: 240 }}
+              overlayStyle={{width: 240}}
               placement="right"
               visible={this.state.visible}
             >
@@ -195,7 +193,7 @@ export default class Register extends Component {
                   size="large"
                   type="password"
                   placeholder="至少6位密码，区分大小写"
-                />
+                />,
               )}
             </Popover>
           </FormItem>
@@ -210,42 +208,11 @@ export default class Register extends Component {
                   validator: this.checkConfirm,
                 },
               ],
-            })(<Input size="large" type="password" placeholder="确认密码" />)}
-          </FormItem>
-          <FormItem>
-            <InputGroup compact>
-              <Select
-                size="large"
-                value={prefix}
-                onChange={this.changePrefix}
-                style={{ width: '20%' }}
-              >
-                <Option value="86">+86</Option>
-                <Option value="87">+87</Option>
-              </Select>
-              {getFieldDecorator('mobile', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入手机号！',
-                  },
-                  {
-                    pattern: /^1\d{10}$/,
-                    message: '手机号格式错误！',
-                  },
-                ],
-              })(
-                <Input
-                  size="large"
-                  style={{ width: '80%' }}
-                  placeholder="11位手机号"
-                />
-              )}
-            </InputGroup>
+            })(<Input size="large" type="password" placeholder="确认密码"/>)}
           </FormItem>
           <FormItem>
             <Row gutter={8}>
-              <Col span={16}>
+              <Col span={14}>
                 {getFieldDecorator('captcha', {
                   rules: [
                     {
@@ -253,24 +220,19 @@ export default class Register extends Component {
                       message: '请输入验证码！',
                     },
                   ],
-                })(<Input size="large" placeholder="验证码" />)}
+                })(<Input size="large" placeholder="验证码"/>)}
               </Col>
-              <Col span={8}>
-                <Button
-                  size="large"
-                  disabled={count}
-                  className={styles.getCaptcha}
-                  onClick={this.onGetCaptcha}
-                >
-                  {count ? `${count} s` : '获取验证码'}
-                </Button>
+              <Col span={10}>
+                <a href='javascript:;'>
+                  <img src={this.state.captchUrl} className='captcha' onClick={this.getCaptcha}/>
+                </a>
               </Col>
             </Row>
           </FormItem>
           <FormItem>
             <Button
               size="large"
-              loading={register.submitting}
+              loading={this.state.registing}
               className={styles.submit}
               type="primary"
               htmlType="submit"
@@ -286,3 +248,5 @@ export default class Register extends Component {
     );
   }
 }
+
+export default connect(({global}) => ({global}))(Form.create()(Register));

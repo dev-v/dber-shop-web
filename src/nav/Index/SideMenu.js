@@ -1,6 +1,7 @@
 import {PureComponent} from 'react';
 import {Menu, Icon, Layout} from 'antd';
-import menus from './menu';
+import {menu as menus} from '../Component';
+import styles from './SideMenu.less';
 
 const {SubMenu, Item} = Menu;
 const {Sider} = Layout;
@@ -10,6 +11,23 @@ export default class SideMenu extends PureComponent {
   defaultSelectedKeys = [];
   defaultSelectedParent = [];
 
+  state = {
+    collapsed: false,
+    menuItems: undefined,
+  }
+
+  constructor(props) {
+    super(props);
+    this.events = props.events;
+    this.state.menuItems = this.getMenuItems(menus);
+  }
+
+  toogleCollapse = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+
   componentDidMount() {
     this.onSelect({
       key: this.defaultSelectedKeys[0],
@@ -17,8 +35,7 @@ export default class SideMenu extends PureComponent {
   }
 
   onSelect = ({key}) => {
-    this.props.onClick &&
-    this.props.onClick(this.getItem(key), this.getItems(key));
+    this.events.changeComponent && this.events.changeComponent(this.getItem(key), this.getItems(key));
   };
 
   getMenuItems(menus, parentPath = '') {
@@ -75,15 +92,17 @@ export default class SideMenu extends PureComponent {
   }
 
   render() {
-    const menuItems = this.getMenuItems(menus);
-    return (<Sider collapsible
-                   collapsed={this.props.collapsed}>
-      <div className="logo">
-      </div>
-      <Menu
-        defaultSelectedKeys={this.defaultSelectedKeys} mode="inline"
-        defaultOpenKeys={this.defaultSelectedParent}
-        onSelect={this.onSelect}>
+    const {collapsed, menuItems} = this.state;
+    return (<Sider collapsible collapsed={collapsed}>
+      <Icon className={styles.trigger}
+            type={collapsed ? 'menu-unfold' : 'menu-fold'}
+            onClick={this.toogleCollapse}
+      />
+      <div className="logo"></div>
+      <Menu mode="inline"
+            defaultSelectedKeys={this.defaultSelectedKeys}
+            defaultOpenKeys={this.defaultSelectedParent}
+            onSelect={this.onSelect}>
         {menuItems}
       </Menu>
     </Sider>);

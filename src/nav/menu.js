@@ -2,14 +2,29 @@ export default [
   {
     title: '店铺管理',
     path: 'shop',
-    icon: 'profile',
+    icon: 'shop',
     children: [
       {
-        title: '店铺',
-        path: 'shop',
+        title: '服务设置',
+        path: 'service',
+        icon: 'solution',
         selected: true,
         models: () => [import('../models/shop')],
-        component: () => import('../routes/Shop'),
+        component: () => import('../routes/Shop/Service'),
+      },
+      {
+        title: '店铺设置',
+        path: 'shop',
+        icon: 'profile',
+        models: () => [import('../models/shop')],
+        component: () => import('../routes/Shop/Shop'),
+      },
+      {
+        title: '图片设置',
+        path: 'img',
+        icon: 'picture',
+        models: () => [import('../models/shop')],
+        component: () => import('../routes/Shop/Img'),
       },],
   },
   {
@@ -21,7 +36,12 @@ export default [
         title: '登录',
         path: 'login',
         selected: true,
-        models: () => [import('../models/login')],
         component: () => import('../routes/User/Login'),
+      },
+      {
+        title: '登录',
+        path: 'register',
+        selected: true,
+        component: () => import('../routes/User/Register'),
       },],
   }];

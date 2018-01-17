@@ -1,8 +1,7 @@
 import dva from 'dva';
 import {message} from 'antd';
 import './index.css';
-import menu from './nav/menu';
-import {set} from './nav/Component';
+import {setApp} from './nav/Component';
 import createBrowserHistory from 'history/createBrowserHistory';
 
 const app = dva({
@@ -13,13 +12,10 @@ const app = dva({
   },
 });
 
-set(app, menu);
+setApp(app);
+
+app.model(require('./models/global'));
 
 app.router(require('./router'));
 
 app.start('#root');
-
-// setTimeout(() => {
-document.getElementById('preloader').remove();
-// }, 2400);
-

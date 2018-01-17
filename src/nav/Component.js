@@ -1,11 +1,43 @@
+import menu from './menu';
 import dynamic from 'dva/dynamic';
 
 let app;
-let menu;
 
-const set = (useApp, useMenu) => {
+const setApp = (useApp) => {
   app = useApp;
-  menu = useMenu;
+};
+
+let notFound, indexPage, userIndex;
+
+const getIndexPage = () => {
+  if (!indexPage) {
+    indexPage = dynamic({
+      app,
+      models: () => [import('../models/shop')],
+      component: () => import('./Index/IndexPage'),
+    });
+  }
+  return indexPage;
+};
+
+const getNotFound = () => {
+  if (!notFound) {
+    notFound = dynamic({
+      app,
+      component: () => import('../routes/Exception/404'),
+    });
+  }
+  return notFound;
+};
+
+const getUserIndex = () => {
+  if (!userIndex) {
+    userIndex = dynamic({
+      app,
+      component: () => import('./User/UserIndex'),
+    });
+  }
+  return userIndex;
 };
 
 const getMenu = (paths, menus) => {
@@ -15,7 +47,9 @@ const getMenu = (paths, menus) => {
     for (let j = 0, jLen = menus.length; j < jLen; j++) {
       menu = menus[j];
       if (path == menu.path) {
-        if (menu.children) {
+        if (i == len - 1) {
+          return menu;
+        } else if (menu.children) {
           menus = menu.children;
           break;
         } else {
@@ -27,26 +61,21 @@ const getMenu = (paths, menus) => {
 };
 
 const getItem = (path) => {
-  if (path) {
-    if (path.startsWith('/')) {
-      path = path.substr(1);
-    }
-    const paths = path.split('/');
-    return getMenu(paths, menu);
+  if (path.startsWith('/')) {
+    path = path.substr(1);
   }
+  const paths = path.split('/');
+  return getMenu(paths, menu);
 };
 
 const pathDynamics = new Map();
 
-let notFoundComponent;
-
 const getComponent = (path) => {
-
   let component = pathDynamics.get(path);
 
   if (!component) {
     const item = getItem(path);
-    if (item) {
+    if (item && item.component) {
       component = dynamic({
         app,
         models: item.models,
@@ -54,18 +83,23 @@ const getComponent = (path) => {
       });
       pathDynamics.set(item.realPath, component);
     } else {
-      if (!notFoundComponent) {
-        notFoundComponent = dynamic({
-          app,
-          models: () => [],
-          component: () => import('../routes/Exception/404'),
-        });
-      }
-      return notFoundComponent;
+      return getNotFound();
     }
   }
 
   return component;
 };
 
-export {getComponent, set};
+const hasMenu = (path) => {
+  return getItem(path) ? true : false;
+};
+
+export {
+  getComponent,
+  setApp,
+  getIndexPage,
+  menu,
+  getUserIndex,
+  getNotFound,
+  hasMenu,
+};
