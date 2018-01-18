@@ -2,13 +2,13 @@ import React, {PureComponent} from 'react';
 import {Layout, Menu, Icon, Spin, Dropdown, Avatar} from 'antd';
 import styles from './IndexHeader.less';
 import {storage, clearStorage} from '../../utils/util';
-import {shopService} from '../../utils/request';
+import {loginService} from '../../utils/request';
 
 const {Header} = Layout;
 
 const menuClick = {
   logout: () => {
-    shopService.get('/login/logout').then(() => {
+    loginService.get('/login/logout').then(() => {
       clearStorage();
       location.pathname = '/';
     });

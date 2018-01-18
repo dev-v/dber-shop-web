@@ -3,7 +3,7 @@ import {Router, Switch, Route} from 'dva/router';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import {LocaleProvider} from 'antd';
 import {getUserIndex, getIndexPage, hasMenu, getNotFound} from './nav/Component';
-import {shopService} from './utils/request';
+import {connect} from 'dva';
 import {storage} from './utils/util';
 
 const removePreloader = () => {
@@ -44,7 +44,7 @@ class RootRoute extends React.PureComponent {
       this.state.component = this.getComponent();
       removePreloader();
     } else {
-      shopService.request('/login/getLogin').then((data) => {
+      props.dispatch({type: 'login/getLogin'}).then((data) => {
         storage('login', data.response);
         this.setState({
           component: this.getComponent()
@@ -57,8 +57,8 @@ class RootRoute extends React.PureComponent {
         removePreloader();
       });
     }
-
   }
+
 
   render() {
     return (
@@ -71,6 +71,8 @@ class RootRoute extends React.PureComponent {
   }
 }
 
+const ConRootRoute = connect(() => ({}))(RootRoute);
+
 export default function RouterConfig({history}) {
-  return <RootRoute history={history}/>
+  return <ConRootRoute history={history}/>
 }

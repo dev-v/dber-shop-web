@@ -34,7 +34,6 @@ const getUserIndex = () => {
   if (!userIndex) {
     userIndex = dynamic({
       app,
-      models: () => [import('../models/login')],
       component: () => import('./User/UserIndex'),
     });
   }

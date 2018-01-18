@@ -26,8 +26,7 @@ export default [
         models: () => [import('../models/shop')],
         component: () => import('../routes/Shop/Img'),
       },],
-  },
-  {
+  }, {
     title: '登录管理',
     path: 'user',
     visible: false,
