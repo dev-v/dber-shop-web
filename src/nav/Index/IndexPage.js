@@ -2,46 +2,47 @@ import {Layout} from 'antd';
 import React from 'react';
 import SideMenu from './SideMenu';
 import ContentSwitch from './ContentSwitch';
-import './IndexPage.less';
-import {connect} from 'dva';
 import IndexHeader from './IndexHeader';
-import {storage} from '../../utils/util';
-import {shopService} from '../../utils/request';
+import {connect} from 'dva';
+import GlobalInit from './GlobalInit';
 
 const {Content, Footer} = Layout;
 
-export default class IndexPage extends React.Component {
-  evnents = {
-    changeComponent: undefined,
-  };
+class IndexPage extends React.Component {
 
-  init = () => {
-    if (!storage('shop')) {
-      shopService.get(`shop/get/${storage('login').accountId}`).then((data) => {
-        if (data.code == 200) {
-          storage('shop', data.response);
-          this.setState({
-            ...this.state
-          });
-        }
-      });
+  componentDidMount() {
+    GlobalInit(this.props,()=>{
+    });
+  }
+
+  state = {
+    contentProps: {
+      item: undefined,
+      items: undefined,
+      showBreadcrumb: false,
     }
   }
 
-  constructor(props) {
-    super(props);
-    this.init();
+  onMenuSelect = (item, items) => {
+    this.setState({
+      ...this.state,
+      contentProps: {
+        ...this.state.contentProps,
+        item,
+        items,
+      }
+    });
   }
 
   render() {
     return (
       <Layout>
         <Layout style={{minHeight: '100vh'}}>
-          <SideMenu {...this.state} events={this.evnents}/>
+          <SideMenu onSelect={this.onMenuSelect}/>
           <Layout>
-            <IndexHeader {...this.state}/>
+            <IndexHeader/>
             <Content style={{background: '#fff', padding: '16px'}}>
-              <ContentSwitch menuClick={this.evnents} showBreadcrumb={false}/>
+              <ContentSwitch {...this.state.contentProps}/>
             </Content>
             <Footer style={{textAlign: 'center'}}>
               Ant Design ©2016 Created by Ant UED
@@ -52,3 +53,5 @@ export default class IndexPage extends React.Component {
     );
   }
 }
+
+export default connect((global) => ({global}))(IndexPage);

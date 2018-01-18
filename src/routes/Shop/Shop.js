@@ -31,7 +31,7 @@ class Shop extends React.Component {
 
   constructor(props) {
     super(props);
-    const shop = storage('shop');
+    const shop = storage('global').shop;
     if (shop) {
       this.state.notShop = false;
       shop.feature = shop;
@@ -46,7 +46,7 @@ class Shop extends React.Component {
       type: 'shop/save',
       data: {...this.state.values, feature: null},
     }).then((data) => {
-      storage('shop', data);
+      storage('global', {shop: data});
       message.success('保存成功！');
     });
   }

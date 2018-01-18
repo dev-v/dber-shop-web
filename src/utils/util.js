@@ -37,7 +37,14 @@ const isBlank = (val) => {
 }
 
 const storage = (key, val) => {
-  if (typeof val != 'undefined') {
+  const type = typeof val;
+  if (type != 'undefined') {
+    if (type == 'object') {
+      const old = window.localStorage.getItem(key);
+      if (old) {
+        val = Object.assign(JSON.parse(old), val);
+      }
+    }
     window.localStorage.setItem(key, JSON.stringify(val));
     return val;
   }

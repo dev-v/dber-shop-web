@@ -1,35 +1,56 @@
 import React from 'react';
 import {Switch, Route} from 'dva/router';
 import {Icon, Breadcrumb} from 'antd';
+import {nProgress} from '../../utils/progress';
 import {getComponent} from '../Component';
 
 export default class ContentSwitch extends React.Component {
   state = {
-    component: undefined,
     showBreadcrumb: true,
-    items: [],
   };
 
   componentWillMount() {
-    Object.assign(this.state, {showBreadcrumb: this.props.showBreadcrumb});
-    if (this.props.menuClick) {
-      const menuClick = this.props.menuClick;
-      menuClick.changeComponent = (item, items) => {
-        this.setState({
-          ...this.state,
-          component: getComponent(item.realPath),
-          items,
-        });
-      };
+  }
+
+  componentDidMount() {
+  }
+
+  componentWillReceiveProps(nextProps) {
+    nProgress.inc();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.item) {
+      return true;
+    } else {
+      nProgress.done();
+      return false;
     }
   }
 
+  componentWillUpdate(nextProps, nextState) {
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    nProgress.done();
+  }
+
+  componentWillUnmount() {
+  }
+
+  constructor(props) {
+    super(props);
+    this.state.showBreadcrumb = props.showBreadcrumb;
+  }
+
+
   render() {
-    const {component, items, showBreadcrumb} = this.state;
+    const {item, items} = this.props;
+    const component = item ? getComponent(item.realPath) : undefined;
     return (
       <div>
         {
-          showBreadcrumb && (<Breadcrumb style={{paddingBottom: '16px'}}>
+          this.state.showBreadcrumb && item && (<Breadcrumb style={{paddingBottom: '16px'}}>
             {items.map((item) => {
               return <Breadcrumb.Item key={item.realPath || item.path}>
                 {item.icon && <Icon type={item.icon}/>}
@@ -39,7 +60,7 @@ export default class ContentSwitch extends React.Component {
           </Breadcrumb>)
         }
         <Switch>
-          <Route component={component}></Route>
+          {component && <Route component={component}></Route>}
         </Switch>
       </div>);
   }

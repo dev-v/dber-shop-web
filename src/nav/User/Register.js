@@ -1,13 +1,8 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import {routerRedux, Link} from 'dva/router';
-import {Form, Input, Button, Select, Row, Col, Popover, Progress, message} from 'antd';
+import {Form, Input, Button, Row, Col, Popover, Progress, message} from 'antd';
 import styles from './Register.less';
-import {shopService} from "../../utils/request";
+import {connect} from 'dva';
 
 const FormItem = Form.Item;
-const {Option} = Select;
-const InputGroup = Input.Group;
 
 const passwordStatusMap = {
   ok: <div className={styles.success}>强度：强</div>,
@@ -21,24 +16,25 @@ const passwordProgressMap = {
   pool: 'exception',
 };
 
-class Register extends Component {
+class Register extends React.PureComponent {
   state = {
     count: 0,
     confirmDirty: false,
     visible: false,
     help: '',
-    captchUrl: undefined,
+    captchaUrl: undefined,
     registing: false,
   };
 
-  componentWillMount() {
-    this.getCaptcha();
+  constructor(props) {
+    super(props);
+    this.state.captchaUrl = props.login.captchaUrl;
   }
 
   getCaptcha = () => {
     this.setState({
       ...this.state,
-      captchUrl: shopService.getUrl('login/captcha?' + Math.random()),
+      captchaUrl: this.props.login.captchaUrl + Math.random()
     });
   };
 
@@ -66,21 +62,19 @@ class Register extends Component {
     this.props.form.validateFields({force: true}, (err, data) => {
       if (!err) {
         this.setRegisting(true);
-        this.props.dispatch({
-          type: 'global/regist',
-          data,
-        }).then((result) => {
-          this.setRegisting(false);
+        this.props.dispatch({type: 'login/regist', data,}).then((result) => {
           if (result.code == 200) {
             message.info('注册成功，即将跳转登录界面！');
             setTimeout(() => {
               location.pathname = '/user/login';
             }, 2000)
           } else {
-            message.error(result.msg);
+            this.getCaptcha();
           }
-        }).finally(() => {
+        }).catch(() => {
           this.getCaptcha();
+        }).finally(() => {
+          this.setRegisting(false);
         });
       }
     });
@@ -224,7 +218,7 @@ class Register extends Component {
               </Col>
               <Col span={10}>
                 <a href='javascript:;'>
-                  <img src={this.state.captchUrl} className='captcha' onClick={this.getCaptcha}/>
+                  <img src={this.state.captchaUrl} className='captcha' onClick={this.getCaptcha}/>
                 </a>
               </Col>
             </Row>
@@ -239,9 +233,7 @@ class Register extends Component {
             >
               注册
             </Button>
-            <Link className={styles.login} to="/user/login">
-              使用已有账户登录
-            </Link>
+            <a className={styles.login} href="/user/login">使用已有账户登录</a>
           </FormItem>
         </Form>
       </div>
@@ -249,4 +241,4 @@ class Register extends Component {
   }
 }
 
-export default connect(({global}) => ({global}))(Form.create()(Register));
+export default connect(({login}) => ({login}))(Form.create()(Register));

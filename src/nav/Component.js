@@ -13,7 +13,7 @@ const getIndexPage = () => {
   if (!indexPage) {
     indexPage = dynamic({
       app,
-      models: () => [import('../models/shop')],
+      models: () => [import('../models/global')],
       component: () => import('./Index/IndexPage'),
     });
   }
@@ -34,6 +34,7 @@ const getUserIndex = () => {
   if (!userIndex) {
     userIndex = dynamic({
       app,
+      models: () => [import('../models/login')],
       component: () => import('./User/UserIndex'),
     });
   }

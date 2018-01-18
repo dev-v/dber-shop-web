@@ -14,12 +14,13 @@ export default class SideMenu extends PureComponent {
   state = {
     collapsed: false,
     menuItems: undefined,
+    onSelect: undefined,
   }
 
   constructor(props) {
     super(props);
-    this.events = props.events;
     this.state.menuItems = this.getMenuItems(menus);
+    this.state.onSelect = props.onSelect;
   }
 
   toogleCollapse = () => {
@@ -35,8 +36,8 @@ export default class SideMenu extends PureComponent {
   }
 
   onSelect = ({key}) => {
-    this.events.changeComponent && this.events.changeComponent(this.getItem(key), this.getItems(key));
-  };
+    this.state.onSelect && this.state.onSelect(this.getItem(key), this.getItems(key));
+  }
 
   getMenuItems(menus, parentPath = '') {
     if (!Array.isArray(menus)) {

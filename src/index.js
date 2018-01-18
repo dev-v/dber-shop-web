@@ -14,8 +14,6 @@ const app = dva({
 
 setApp(app);
 
-app.model(require('./models/global'));
-
 app.router(require('./router'));
 
 app.start('#root');

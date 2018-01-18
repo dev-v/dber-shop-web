@@ -9,4 +9,4 @@ class Shop extends React.Component {
   }
 }
 
-export default connect(({shop, global}) => ({shop, global}))(Shop);
+export default connect(({shop}) => ({shop}))(Shop);

@@ -1,12 +1,8 @@
 import fetch from 'dva/fetch';
-import nprogress from 'nprogress';
+import {nProgress} from './progress';
 import {isBlank, clearStorage} from './util';
 
 function checkSystemStatus(response) {
-  if (response.code == 200) {
-    return response;
-  }
-
   // status为9999以下的系统异常，平台统一处理
   const code = response.code;
   if (code == 200 || code > 9999) {
@@ -14,13 +10,12 @@ function checkSystemStatus(response) {
   } else if (code == 600) {//请求登录
     clearStorage();
     location.pathname = '/user/login';
+  } else {
+    throw new Error(response.msg);
   }
-
-  throw new Error(response.msg);
 }
 
 function checkStatus(response) {
-  // status为9999以下的系统异常，平台统一处理
   if (response.status >= 200 && response.status < 300) {
     return response.json();
   }
@@ -29,36 +24,14 @@ function checkStatus(response) {
   throw error;
 }
 
-class Progress {
-  n = 0;
-
-  inc() {
-    if (this.n < 1) {
-      this.n = 1;
-      nprogress.inc();
-    } else {
-      ++this.n;
-    }
-  }
-
-  done() {
-    --this.n;
-    if (this.n < 1) {
-      nprogress.done();
-    }
-  }
-}
-
-const progress = new Progress();
-
 export default function request(url, options) {
   console.log(url, options && options.body);
-  progress.inc();
+  nProgress.inc();
   return fetch(url, options)
     .then(checkStatus)
     .then(checkSystemStatus)
     .finally(() => {
-      progress.done();
+      nProgress.done();
     });
 }
 
@@ -125,4 +98,8 @@ class WrapService {
   };
 }
 
-export const shopService = new WrapService('http://localhost:8080/');
+const shopService = new WrapService('http://localhost:8080/');
+
+const loginService = shopService;
+
+export {loginService, shopService};

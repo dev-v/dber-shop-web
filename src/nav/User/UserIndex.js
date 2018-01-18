@@ -5,12 +5,13 @@ import GlobalFooter from '../../components/GlobalFooter/index';
 import styles from './UserIndex.less';
 import logo from '../../assets/logo.svg';
 import {getComponent} from '../Component';
+import {storage} from "../../utils/util";
 
-class UserIndex extends PureComponent {
+export default class UserIndex extends PureComponent {
 
   render() {
-    const {global} = this.props;
-    if (global.logined) {
+    const login = storage('login') || {};
+    if (login.logined) {
       location.pathname = '/';
     }
     const {pathname} = location;
@@ -34,7 +35,3 @@ class UserIndex extends PureComponent {
     );
   }
 }
-
-export default connect(({global}) => ({global}))(UserIndex);
-
-// export default UserIndex;

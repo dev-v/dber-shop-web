@@ -35,13 +35,11 @@ export default [
       {
         title: '登录',
         path: 'login',
-        selected: true,
-        component: () => import('../routes/User/Login'),
+        component: () => import('./User/Login'),
       },
       {
-        title: '登录',
+        title: '注册',
         path: 'register',
-        selected: true,
-        component: () => import('../routes/User/Register'),
+        component: () => import('./User/Register'),
       },],
   }];

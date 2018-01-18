@@ -1,29 +1,27 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import {Link} from 'dva/router';
 import {Form, Input, Button, Icon, Checkbox, Row, Col, message} from 'antd';
 import styles from './Login.less';
-import {shopService} from "../../utils/request";
-import {storage} from '../../utils/util';
+import {connect} from 'dva';
+import {storage} from "../../utils/util";
 
-class Login extends Component {
+class Login extends React.PureComponent {
   state = {
     type: 'account',
-    needCaptcha: false,
-    captchUrl: undefined,
+    captchaUrl: undefined,
     submiting: false,
   };
 
-  componentWillMount() {
-    Object.assign(this.state, storage('login'));
-    this.state.needCaptcha && this.getCaptcha();
+  constructor(props) {
+    super(props);
+    this.state.captchaUrl = props.login.captchaUrl;
   }
 
   getCaptcha = () => {
+    storage('login', {
+      needCaptcha: true,
+    });
     this.setState({
       ...this.state,
-      needCaptcha: true,
-      captchUrl: shopService.getUrl('login/captcha?' + Math.random()),
+      captchaUrl: this.props.login.captchaUrl + Math.random()
     });
   };
 
@@ -33,15 +31,13 @@ class Login extends Component {
       (err, data) => {
         if (!err) {
           data.verifyWay = this.state.type;
-          shopService.post('/login/login', data).then((result) => {
+          this.props.dispatch({type: 'login/login', data}).then((result) => {
             if (result.code == 200) {
-              storage('login', result.response);
               location.pathname = '/';
             } else {
-              message.error(result.msg);
               this.getCaptcha();
             }
-          }).catch(() => {
+          }).catch((e) => {
             this.getCaptcha();
           });
         }
@@ -84,7 +80,7 @@ class Login extends Component {
             )}
           </Form.Item>
           {
-            this.state.needCaptcha && (
+            storage('login').needCaptcha && (
               <Form.Item>
                 <Row gutter={8}>
                   <Col span={14}>
@@ -99,7 +95,7 @@ class Login extends Component {
                   </Col>
                   <Col span={10}>
                     <a href='javascript:;'>
-                      <img src={this.state.captchUrl} className='captcha' onClick={this.getCaptcha}/>
+                      <img src={this.state.captchaUrl} className='captcha' onClick={this.getCaptcha}/>
                     </a>
                   </Col>
                 </Row>
@@ -126,11 +122,11 @@ class Login extends Component {
           <span className={styles.iconAlipay}/>
           <span className={styles.iconTaobao}/>
           <span className={styles.iconWeibo}/>
-          <Link className={styles.register} to="/user/register">注册账户</Link>
+          <a className={styles.register} href="/user/register">注册账户</a>
         </div>
       </div>
     );
   }
 }
 
-export default connect(({global}) => ({global}))(Form.create()(Login));
+export default connect(({login}) => ({login}))(Form.create()(Login));

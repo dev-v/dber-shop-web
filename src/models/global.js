@@ -1,26 +1,20 @@
 import {shopService} from '../utils/request';
 import {storage} from '../utils/util';
+import {message} from 'antd';
 
 export default {
   namespace: 'global',
   state: {},
   reducers: {},
   effects: {
-    * getLogin(_, {call, put}) {
-      const result = yield call(shopService.get, 'login/getLogin');
-      return storage('login', result.response);
-    },
-    * login({data}, {call, put}) {
-      const result = yield call(shopService.post, 'login/login', data);
-      return storage('login', result.response);
-    },
-    * regist({data}, {call}) {
-      const result = yield call(shopService.post, 'login/regist', data);
+    * getShop(_, {call}) {
+      const result = yield call(shopService.get, `shop/get/${storage('login').accountId}`);
+      if (result.code != 200) {
+        message.error(result.msg);
+      } else {
+        storage('global', {shop: result.response});
+      }
       return result;
     },
-    * logout(payload, {call, put}) {
-      yield call(shopService.get, 'login/logout');
-      location.pathname = '/';
-    },
-  },
-};
+  }
+}
