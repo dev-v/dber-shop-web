@@ -13,7 +13,7 @@ const getIndexPage = () => {
   if (!indexPage) {
     indexPage = dynamic({
       app,
-      models: () => [import('../models/global')],
+      models: () => [import('../models/global'), import('../models/plat')],
       component: () => import('./Index/IndexPage'),
     });
   }

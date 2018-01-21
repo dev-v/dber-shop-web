@@ -1,5 +1,24 @@
 export default [
   {
+    title: '运营管理',
+    path: 'operation',
+    children: [
+      {
+        title: '服务管理',
+        path: 'service',
+        icon: 'solution',
+        models: () => [import('../models/service'), import('../models/site')],
+        component: () => import('../routes/Shop/Service'),
+      },
+      {
+        title: '会员卡管理',
+        path: 'vipCard',
+        selected: true,
+        models: () => [import('../models/service'),import('../models/vipCard'), import('../models/vipCardService')],
+        component: () => import('../routes/Operation/VipCard'),
+      },],
+  },
+  {
     title: '店铺管理',
     path: 'shop',
     icon: 'shop',
@@ -8,8 +27,7 @@ export default [
         title: '服务设置',
         path: 'service',
         icon: 'solution',
-        selected: true,
-        models: () => [import('../models/shop')],
+        models: () => [import('../models/service'), import('../models/site')],
         component: () => import('../routes/Shop/Service'),
       },
       {
@@ -20,13 +38,14 @@ export default [
         component: () => import('../routes/Shop/Shop'),
       },
       {
-        title: '图片设置',
+        title: '图片管理',
         path: 'img',
         icon: 'picture',
         models: () => [import('../models/shop')],
         component: () => import('../routes/Shop/Img'),
       },],
-  }, {
+  },
+  {
     title: '登录管理',
     path: 'user',
     visible: false,

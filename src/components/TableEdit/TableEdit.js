@@ -1,4 +1,4 @@
-import {Table, Input, message, Popconfirm} from 'antd';
+import {message, Popconfirm, Table} from 'antd';
 import CellType from './CellHelp';
 import CellDictRender from './CellDictRender';
 
@@ -10,7 +10,7 @@ function renderColumns(text, record, column) {
   const Cell = column.editable || CellType.input;
   return (
     record.editable
-      ? <Cell size='small' categoryId={column.categoryId} value={text}
+      ? <Cell size='small' {...column} value={text}
               onChange={(val) => {
                 record[column.dataIndex || column.key] = val;
               }}/>
@@ -30,7 +30,12 @@ const _default = {
   onPage: undefined,//(page)=>{}
 };
 
-export default class Index extends React.Component {
+export default class TableEdit extends React.Component {
+
+  static isAutoKey = (key) => {
+    return key && key.toString().startsWith(_idKey);
+  }
+
   // 客户端操作
   _custom = {
     del: undefined,
@@ -48,7 +53,7 @@ export default class Index extends React.Component {
 
     this._props = {..._default, ...props};
 
-    let {columns, operations = [], selectedRowKeys, del, edit, pagination, onPage} = props;
+    let {columns, operations = [], select, del, edit, pagination, onPage} = props;
 
     // 可行内编辑
     if (edit) {
@@ -91,13 +96,16 @@ export default class Index extends React.Component {
 
     //可选择行内数据 选择后的数据绑定到配置的数组对象上
     let rowSelection;
-    if (selectedRowKeys) {
-      delete this._props.selectedRowKeys;
+
+    if (select) {
+      const {selectedRowKeys, type = 'checkbox', onChange} = select;
+      delete this._props.select;
       this._props.rowSelection = {
-        selectedRowKeys,
-        onChange: (keys) => {
+        selectedRowKeys, type,
+        onChange: (keys, rows) => {
           selectedRowKeys.length = 0;
           selectedRowKeys.push(...keys);
+          onChange && onChange(keys, rows);
           this.setState({selectedRowKeys});
         },
       };
@@ -155,7 +163,9 @@ export default class Index extends React.Component {
             <div>
               {
                 record.editable ? <span className='operation'>
-                <a onClick={() => {this.save(record);}}>保存</a>
+                <a onClick={() => {
+                  this.save(record);
+                }}>保存</a>
                 <a onClick={() => this.cancel(record)}>取消</a>
                 </span>
                   : <span className='operation'>
@@ -186,16 +196,15 @@ export default class Index extends React.Component {
 
   edit = (record) => {
     if (this.editRecord && this.editRecord != record) {
-      message.warn(msg);
-    } else {
-      record.editable = true;
-      this.setState({...this.state});
+      this.cancel(this.editRecord);
     }
+    record.editable = true;
+    this.setState({...this.state});
   };
 
   save = (record) => {
     delete record.editable;
-    if ((record[this._props.rowKey] || '').toString().startsWith(_idKey)) {
+    if (TableEdit.isAutoKey(record[this._props.rowKey] || '')) {
       delete record[this._props.rowKey];
     }
     this._custom.edit(record);
@@ -213,7 +222,7 @@ export default class Index extends React.Component {
 
   del = (record) => {
     this.delRecord = record;
-    if (!record[this._props.rowKey].toString().startsWith(_idKey) &&
+    if (!TableEdit.isAutoKey(record[this._props.rowKey]) &&
       this._custom.del) {
       this._custom.del(record).then(() => {
         this.realDel(record);
@@ -262,7 +271,6 @@ export default class Index extends React.Component {
     }
 
     this.state.deleteFlag = false;
-
     return <Table {...this._props} {...this.state}/>;
 
   }

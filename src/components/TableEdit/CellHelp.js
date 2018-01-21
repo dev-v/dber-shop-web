@@ -1,14 +1,14 @@
 import {connect} from 'dva';
-import CellDictSelect from './CellDictSelect';
-import CellNumber from './CellNumber';
-import CellTime from './CellTime';
-import CellInput from './CellInput';
+import DictSelect from '../Form/DictSelect';
+import FNumber from '../Form/FNumber';
+import FTime from '../Form/FTime';
+import FInput from '../Form/FInput';
 
 const CellType = {
-  input: CellInput,
-  time: CellTime,
-  number: CellNumber,
-  dictSelect: CellDictSelect,
+  input: FInput,
+  time: FTime,
+  number: FNumber,
+  dictSelect: DictSelect,
 };
 
 const DictCategory = {
@@ -26,6 +26,7 @@ const DictCategory = {
   accountStatus: 12,
   accountType: 13,
   shopStatus: 14,
+  fitnessShareSite: 15,
 };
 
 export {CellType, DictCategory};

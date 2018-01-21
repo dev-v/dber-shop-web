@@ -1,6 +1,6 @@
 import fetch from 'dva/fetch';
 import {nProgress} from './progress';
-import {isBlank, clearStorage} from './util';
+import {isBlank, removeStorage} from './util';
 
 function checkSystemStatus(response) {
   // status为9999以下的系统异常，平台统一处理
@@ -8,7 +8,7 @@ function checkSystemStatus(response) {
   if (code == 200 || code > 9999) {
     return response;
   } else if (code == 600) {//请求登录
-    clearStorage();
+    removeStorage('login');
     location.pathname = '/user/login';
   } else {
     throw new Error(response.msg);
@@ -100,6 +100,8 @@ class WrapService {
 
 const shopService = new WrapService('http://localhost:8080/');
 
+const platService = new WrapService('http://localhost:8081/');
+
 const loginService = shopService;
 
-export {loginService, shopService};
+export {loginService, shopService, platService};

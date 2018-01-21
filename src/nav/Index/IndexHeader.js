@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {Layout, Menu, Icon, Spin, Dropdown, Avatar} from 'antd';
 import styles from './IndexHeader.less';
-import {storage, clearStorage} from '../../utils/util';
+import {storage, removeStorage} from '../../utils/util';
 import {loginService} from '../../utils/request';
 
 const {Header} = Layout;
@@ -9,7 +9,7 @@ const {Header} = Layout;
 const menuClick = {
   logout: () => {
     loginService.get('/login/logout').then(() => {
-      clearStorage();
+      removeStorage('login');
       location.pathname = '/';
     });
   }

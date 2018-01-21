@@ -18,7 +18,6 @@ class Shop extends React.Component {
 
   mapEvents = {
     positionChange: (state) => {
-      console.log(state);
       this.setState({
         ...this.state,
         map: {

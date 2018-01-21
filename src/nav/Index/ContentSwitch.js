@@ -29,6 +29,8 @@ export default class ContentSwitch extends React.Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    nProgress.inc();
+    nProgress.done();
   }
 
   componentDidUpdate(prevProps, prevState) {

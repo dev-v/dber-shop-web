@@ -3,7 +3,8 @@ import {Tag} from 'antd';
 export default class TagCheck extends React.Component {
 
   initCheckedValues() {
-    const {tags, value, checkedValues, filter, checkedVal, notCheckedVal} = this.state;
+    const {tags, value, filter, checkedVal, notCheckedVal} = this.state;
+    const checkedValues = this.state.checkedValues = [];
     tags.map((tag) => {
       if (value[tag.value] == checkedVal) {
         checkedValues.push(tag.value);
@@ -13,8 +14,13 @@ export default class TagCheck extends React.Component {
 
   constructor(props) {
     super(props);
-    const {tags = [], value = {}, checkedVal = 1, notCheckedVal = 2} = props;
-    this.state = {tags, value, checkedVal, notCheckedVal, checkedValues: []};
+    const {tags = [], value = {}, checkedVal = 1, notCheckedVal = 2, labelField = 'label'} = props;
+    this.state = {tags, value, checkedVal, notCheckedVal, labelField};
+    this.initCheckedValues();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.state.value = nextProps.value || this.state.value;
     this.initCheckedValues();
   }
 
@@ -27,7 +33,7 @@ export default class TagCheck extends React.Component {
     value[tag.value] = curIsChecked ? checkedVal : notCheckedVal;
     const {onChange} = this.props;
     if (onChange) {
-      onChange({...this.state.value});
+      onChange({...this.state.value}, {...tag});
     }
   }
 
@@ -54,7 +60,7 @@ export default class TagCheck extends React.Component {
           const checked = this.isChecked(tag);
           return <Tag key={tag.value} color={checked ? '#108ee9' : '#bfbfbf'} onClick={() => {
             this.handleChange(tag);
-          }}>{tag.label}</Tag>;
+          }}>{tag[this.state.labelField]}</Tag>;
         })
       }
     </div>;

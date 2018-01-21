@@ -2,15 +2,11 @@ import {Select} from 'antd';
 import {PureComponent} from 'react';
 import {dictCache} from '../../utils/util';
 
-export default class CellDictSelect extends PureComponent {
-
-  state = {
-    value: undefined,
-  };
+export default class DictSelect extends PureComponent {
 
   constructor(props) {
     super(props);
-    Object.assign(this.state, props);
+    this.state = {value: props.value};
     this.init(props);
   }
 
@@ -18,19 +14,16 @@ export default class CellDictSelect extends PureComponent {
     dictCache.getDict(categoryId, (dict, remote) => {
       const {opts, firstVal} = this.getOptions(dict);
       if (firstVal) {// 有数据的行为
-        this.state.opts = opts;
+        this.opts = opts;
         let value;
         if (this.state.value) {
           value = dict[this.state.value];
         } else {
           value = dict[firstVal];
-          this.state.onChange(firstVal);
+          this.props.onChange(firstVal);
         }
         if (remote) {
-          this.setState({
-            ...this.state,
-            value,
-          });
+          this.setState({value});
         } else {
           this.state.value = value;
         }
@@ -39,19 +32,15 @@ export default class CellDictSelect extends PureComponent {
   };
 
   setValue = (value) => {
-    this.setState({
-      ...this.state,
-      value,
-    });
-    this.state.onChange(value);
+    this.setState({value,});
+    this.props.onChange(value);
   };
 
   getOptions(dict) {
     const opts = [];
     let firstVal;
     for (let val in dict) {
-      opts.push(<Select.Option key={val}
-                               value={val}>{dict[val]}</Select.Option>);
+      opts.push(<Select.Option key={val} value={val}>{dict[val]}</Select.Option>);
       if (!firstVal) {
         firstVal = val;
       }
@@ -60,11 +49,10 @@ export default class CellDictSelect extends PureComponent {
   }
 
   render() {
+    const {size} = this.props;
     return (
-      <Select style={{minWidth: 100}} {...this.state} onChange={(val) => {
-        this.setValue(val);
-      }}>
-        {this.state.opts}
+      <Select size={size} style={{minWidth: 100}} value={this.state.value} onChange={this.setValue}>
+        {this.opts}
       </Select>);
   }
 };

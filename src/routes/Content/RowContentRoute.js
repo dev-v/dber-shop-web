@@ -1,23 +1,38 @@
 import {PureComponent} from 'react';
 import RowContent from '../../components/Content/RowContent';
-import CellDictSelect from '../../components/TableEdit/CellDictSelect';
 
 export default class RowContentRoute extends PureComponent {
   columns;
   modelName;
   otherProps;
 
-  constructor(props, modelName, columns,otherProps) {
-    super(props);
-    this.columns = columns;
-    this.modelName = modelName;
-    this.otherProps=otherProps;
+  parseOperate = (key, operate) => {
+    if (typeof operate == 'object') {
+      this[key] = {
+        operate: this[key],
+        ...operate,
+      };
+    } else {
+      this[key] = operate;
+    }
   }
 
-  query = (page) => {
+  constructor(props, modelName, columns, otherProps) {
+    super(props);
+    const {query = this.query, save = this.save, del = this.del} = props;
+    this.columns = props.columns || columns;
+    this.modelName = props.modelName || modelName;
+    this.otherProps = otherProps;
+    this.parseOperate('query', query);
+    this.parseOperate('save', save);
+    this.parseOperate('del', del);
+  }
+
+  query = (page, condition) => {
     return this.props.dispatch({
       type: `${this.modelName}/query`,
       page: page,
+      condition,
     });
   };
 
@@ -38,11 +53,12 @@ export default class RowContentRoute extends PureComponent {
   render() {
     return (
       <RowContent
+        {...this.otherProps}
+        {...this.props}
         columns={this.columns}
         edit={this.save}
         del={this.del}
         query={this.query}
-        {...this.otherProps}
       />);
   };
 };

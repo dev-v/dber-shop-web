@@ -2,8 +2,8 @@ import {Form, Input, Card, Row, Col, InputNumber, Button,} from 'antd';
 import {PureComponent} from 'react';
 import TagCheck from '../../components/Form/TagCheck';
 import {max, required, phone} from '../../utils/rules';
-import {COL_2, FMT_TIME, mapPropsToForm, submit} from '../../components/Form/FormHelper';
-import WTimePicker from '../../components/Form/WTimePicker';
+import {COL, FMT_TIME, mapPropsToForm, submit} from '../../components/Form/FormHelper';
+import FTime from '../../components/Form/FTime';
 
 const FormItem = Form.Item;
 
@@ -24,7 +24,7 @@ class ShopForm extends PureComponent {
       <Card title='基础信息' bordered={false}>
         <Row>
           <Col span={12}>
-            <FormItem label='店铺名称' {...COL_2}>
+            <FormItem label='店铺名称' {...COL}>
               {getFieldDecorator('name', {
                 rules: [required, max(20)],
               })(
@@ -33,7 +33,7 @@ class ShopForm extends PureComponent {
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label='电话' {...COL_2}>
+            <FormItem label='电话' {...COL}>
               {getFieldDecorator('tellphone', {
                 rules: [phone],
               })(
@@ -44,7 +44,7 @@ class ShopForm extends PureComponent {
         </Row>
         <Row>
           <Col span={12}>
-            <FormItem label='经理姓名' {...COL_2}>
+            <FormItem label='经理姓名' {...COL}>
               {getFieldDecorator('manager', {
                 rules: [max(10)],
               })(
@@ -53,7 +53,7 @@ class ShopForm extends PureComponent {
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label='经理电话' {...COL_2}>
+            <FormItem label='经理电话' {...COL}>
               {getFieldDecorator('managerPhone', {
                 rules: [phone],
               })(
@@ -67,34 +67,34 @@ class ShopForm extends PureComponent {
       <Card title='店铺特征' bordered={false}>
         <Row>
           <Col span={12}>
-            <FormItem label='营业开始时间' {...COL_2}>
+            <FormItem label='营业开始时间' {...COL}>
               {getFieldDecorator('businessBegin', {
                 rules: [required],
               })(
-                <WTimePicker format={FMT_TIME}/>
+                <FTime format={FMT_TIME}/>
               )}
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label='营业结束时间' {...COL_2}>
+            <FormItem label='营业结束时间' {...COL}>
               {getFieldDecorator('businessEnd', {
                 rules: [required],
               })(
-                <WTimePicker format={FMT_TIME}/>
+                <FTime format={FMT_TIME}/>
               )}
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span={12}>
-            <FormItem label='店铺标签' {...COL_2}>
+            <FormItem label='店铺标签' {...COL}>
               {getFieldDecorator('feature', {})(
                 <TagCheck tags={tags}/>
               )}
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label='占地面积（平米）' {...COL_2}>
+            <FormItem label='占地面积（平米）' {...COL}>
               {getFieldDecorator('area', {
                 rules: [],
               })(
@@ -107,7 +107,7 @@ class ShopForm extends PureComponent {
       <Card title='店铺地址' bordered={false}>
         <Row>
           <Col span={12}>
-            <FormItem label='地址' {...COL_2}>
+            <FormItem label='地址' {...COL}>
               {getFieldDecorator('address', {
                 rules: [required],
               })(

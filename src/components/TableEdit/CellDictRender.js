@@ -1,10 +1,10 @@
 import {dictCache} from '../../utils/util';
-import {PureComponent} from 'react';
+import {DictCategory} from "./CellHelp";
 
-export default class CellDictRender extends PureComponent {
+export default class CellDictRender extends React.Component {
 
   state = {
-    value: undefined,
+    label: undefined,
   };
 
   static waitingRefresh = {};
@@ -15,14 +15,14 @@ export default class CellDictRender extends PureComponent {
    */
   dictRender = ({value, categoryId}) => {
     dictCache.getDict(categoryId, (dict, remote) => {
-      const val = dict[value];
-      if (!val) {
+      const label = dict[value];
+      if (!label) {
         this.setWaitingRefresh(categoryId);
       } else {
         if (remote) {
           this.refresh(categoryId, dict);
         } else {
-          this.state.value = val;
+          this.state.label = label;
         }
       }
     });
@@ -43,7 +43,7 @@ export default class CellDictRender extends PureComponent {
     const instances = this.setWaitingRefresh(categoryId);
     instances.map((instance) => {
       instance.setState({
-        value: dict[instance.props.value],
+        label: dict[instance.props.value],
       });
     });
     CellDictRender.waitingRefresh[categoryId] = undefined;
@@ -51,6 +51,10 @@ export default class CellDictRender extends PureComponent {
 
   render() {
     this.dictRender(this.props);
-    return <span>{this.state.value}</span>;
+    const {categoryId, value,} = this.props;
+    const style = {
+      color: (DictCategory.yesNo == categoryId) ? value == 1 ? 'green' : 'red' : '',
+    }
+    return <span style={style}>{this.state.label}</span>;
   }
 };

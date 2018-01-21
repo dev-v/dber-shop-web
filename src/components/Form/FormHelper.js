@@ -1,36 +1,61 @@
 import {isBlank} from "../../utils/util";
 import {Form} from 'antd';
 
-const COL_2 = {
+const COL = {
   labelCol: {
-    span: 6,
+    span: 8,
   },
   wrapperCol: {
     span: 16,
   }
 }
 
+const COL_INLINE = {
+  className:'col-inline',
+}
+
+const COL_INLINE_BUTTON = {
+  className:'col-inline-btn'
+}
+
+const COL_BUTTON = {
+  wrapperCol: {
+    offset: 8,
+  }
+}
+
 const FMT_TIME = 'HH:mm';
 
-const mapPropsToForm = {
-  onValuesChange: (props, value) => {
-    const {values} = props
-    if (values) {
-      for (let field in value) {
-        if (!isBlank(value[field])) {
-          values[field] = value[field];
-        }
+const buildValuesChange = (values, value) => {
+  if (values) {
+    for (let field in value) {
+      if (!isBlank(value[field])) {
+        values[field] = value[field];
       }
     }
-  },
-  mapPropsToFields: (props) => {
-    const {values = {}} = props, fieldValues = {};
+  }
+}
+
+const buildMapPropsToFields = (values) => {
+  const fieldValues = {};
+  if (values) {
     for (let field in values) {
       fieldValues[field] = Form.createFormField({
         value: values[field],
       })
     }
     return fieldValues;
+  }
+}
+
+const mapPropsToForm = {
+  //支持"."分割符
+  onValuesChange: ({values}, value) => {
+    buildValuesChange(values, value);
+  },
+  //不支持"."分割符
+  mapPropsToFields: ({values}) => {
+    return buildMapPropsToFields(values);
   },
 }
 
@@ -43,4 +68,14 @@ const submit = (e, form, onSubmit) => {
   });
 }
 
-export {COL_2, FMT_TIME, mapPropsToForm, submit};
+export {
+  COL,
+  COL_BUTTON,
+  COL_INLINE_BUTTON,
+  COL_INLINE,
+  FMT_TIME,
+  mapPropsToForm,
+  buildValuesChange,
+  buildMapPropsToFields,
+  submit
+};

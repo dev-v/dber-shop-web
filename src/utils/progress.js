@@ -4,9 +4,9 @@ class NProgress {
   n = 0;
 
   inc() {
+    nprogress.inc();
     if (this.n < 1) {
       this.n = 1;
-      nprogress.inc();
     } else {
       ++this.n;
     }

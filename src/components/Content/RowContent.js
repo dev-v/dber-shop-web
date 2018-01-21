@@ -1,6 +1,7 @@
 import {PureComponent} from 'react';
-import TableEdit from '../TableEdit/Index';
+import TableEdit from '../TableEdit/TableEdit';
 import ToolBar from './ToolBar';
+import {isSame} from "../../utils/util";
 
 //除TableEdit.Index支持的属性以外，扩展的配置属性
 const _default = {
@@ -118,18 +119,21 @@ export default class RowContent extends PureComponent {
 
   query = (page, data) => {
     if (this._custom.query) {
-      this._custom.query(page || this.state.currentPage, data).
-        then((data) => {
-          if (data) {
-            this.setState({...data});
-          }
-        });
+      this._custom.query(page || this.state.currentPage, {...this.props.queryParams,...data}).then((data) => {
+        if (data) {
+          this.setState({...data});
+        }
+      });
     }
   };
 
   render() {
     if (this.props.datas) {
       this.state.datas = this.props.datas;
+    }
+    if (!isSame(this._props.addModel, this.props.addModel)) {
+      this._props.addModel = this.props.addModel;
+      this.query(1);
     }
     return (
       <div>

@@ -45,7 +45,6 @@ class RootRoute extends React.PureComponent {
       removePreloader();
     } else {
       props.dispatch({type: 'login/getLogin'}).then((data) => {
-        storage('login', data.response);
         this.setState({
           component: this.getComponent()
         });

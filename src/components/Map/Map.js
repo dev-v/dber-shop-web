@@ -15,7 +15,7 @@ const DEFAULT_CONFIG = {
 const plugins = {
   Geolocation: {
     // showButton: true,        //显示定位按钮，默认：true
-    timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+    timeout: 60000,          //超过60秒后停止定位，默认：无穷大
     buttonPosition: 'RB',    //定位按钮停靠位置，默认：'LB'，左下角
     // showMarker: true,        //定位成功后在定位到的位置显示点标记，默认：true
     // panToLocation: true,     //定位成功后将定位到的位置作为地图中心点，默认：true
@@ -65,7 +65,6 @@ export default class Map extends React.PureComponent {
 
   events = {
     positionChange: (state) => {//地图中心点变化后触发(包括定位变化、中心点变化、缩放变化等)
-      console.log(state);
     },
     moveStart: () => {//地图平移开始 暂不支持
 

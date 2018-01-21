@@ -7,9 +7,9 @@ export default (namespace, serviceRootPath, methodNameSuffix = '') => {
     state: {},
     reducers: {},
     effects: {
-      * [`query${methodNameSuffix}`]({page}, {call}) {
+      * [`query${methodNameSuffix}`]({page, condition}, {call}) {
         return (yield call(shopService.post,
-          `${serviceRootPath}/query/${page}`)).response;
+          `${serviceRootPath}/query/${page}`, condition)).response;
       },
       * [`queryWithoutPage${methodNameSuffix}`]({condition}, {call}) {
         return (yield call(shopService.post, `${serviceRootPath}/query`,
@@ -18,6 +18,10 @@ export default (namespace, serviceRootPath, methodNameSuffix = '') => {
       * [`del${methodNameSuffix}`]({id}, {call}) {
         return (yield call(shopService.get,
           `${serviceRootPath}/del/${id}`)).response;
+      },
+      * [`delWithCondition${methodNameSuffix}`]({condition}, {call}) {
+        return (yield call(shopService.post,
+          `${serviceRootPath}/delWithCondition`, condition)).response;
       },
       * [`save${methodNameSuffix}`]({data}, {call}) {
         return (yield call(shopService.post, `${serviceRootPath}/save`,
