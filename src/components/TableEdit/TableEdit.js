@@ -153,6 +153,22 @@ export default class TableEdit extends React.Component {
     }
   }
 
+
+  renderOperation = (item, record) => {
+    const type = typeof item;
+    if (type == 'object') {
+      return item.confirm ?
+        <Popconfirm okText="确定" cancelText="取消" key={item.text}
+                    title={item.confirm}
+                    onConfirm={() => item.onClick(record)}>
+          <a href="#">{item.text}</a>
+        </Popconfirm> :
+        <a key={item.text} onClick={() => item.onClick(record)}>{item.text}</a>
+    } else {//function
+      return item(record);
+    }
+  }
+
   getOperationColumn = (operations) => {
     if (operations.length > 0) {
       return {
@@ -160,34 +176,15 @@ export default class TableEdit extends React.Component {
         dataIndex: 'operation',
         render: (text, record) => {
           return (
-            <div>
-              {
-                record.editable ? <span className='operation'>
-                <a onClick={() => {
-                  this.save(record);
-                }}>保存</a>
-                <a onClick={() => this.cancel(record)}>取消</a>
-                </span>
-                  : <span className='operation'>
-                      {
-                        operations.map((item) => {
-                          return (item.confirm ?
-                              <Popconfirm key={item.text} title={item.confirm}
-                                          onConfirm={() => item.onClick(
-                                            record)}
-                                          okText="确定"
-                                          cancelText="取消">
-                                <a href="#">{item.text}</a>
-                              </Popconfirm>
-                              : <a key={item.text} onClick={() => {
-                                item.onClick(record);
-                              }}>{item.text}</a>
-                          );
-                        })
-                      }
-                    </span>
-              }
-            </div>
+            <span className='operation'>{
+              record.editable ? [
+                  <a key='保存' onClick={() => this.save(record)}>保存</a>,
+                  <a key='取消' onClick={() => this.cancel(record)}>取消</a>
+                ] :
+                operations.map((item) => {
+                  return this.renderOperation(item, record);
+                })
+            }</span>
           );
         },
       };

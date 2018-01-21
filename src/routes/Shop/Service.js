@@ -1,6 +1,6 @@
 import {connect} from 'dva';
 import {Card, message, Tabs} from 'antd';
-import {dictCache, run, storage} from '../../utils/util';
+import {dictCache, run  } from '../../utils/util';
 import {DictCategory} from "../../components/TableEdit/CellHelp";
 import ServiceForm from './ServiceForm';
 import TagButton from "../../components/Form/TagButton";
@@ -84,10 +84,6 @@ class Service extends React.PureComponent {
       types: {...this.state.types},
       service,
     });
-  }
-
-  getServiceDetail = (shopService) => {
-
   }
 
   render() {

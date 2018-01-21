@@ -23,7 +23,7 @@ export default class FTime extends React.Component {
   render() {
     const {size} = this.props;
     return (
-      <TimePicker size={size} format={FMT_TIME} onChange={(time) => {
+      <TimePicker size={size} value={this.state.value} format={FMT_TIME} onChange={(time) => {
         this.setValue(time);
       }}/>);
   }
