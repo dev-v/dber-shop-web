@@ -1,5 +1,5 @@
 import {PureComponent} from 'react';
-import {Menu, Icon, Layout} from 'antd';
+import {Icon, Layout, Menu} from 'antd';
 import {menu as menus} from '../Component';
 import styles from './SideMenu.less';
 

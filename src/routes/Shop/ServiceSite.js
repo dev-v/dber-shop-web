@@ -1,9 +1,10 @@
 import {connect} from 'dva';
-import {Col, Divider, Row} from 'antd';
+import {Col, Row} from 'antd';
 import RowContentRoute from "../Content/RowContentRoute";
 import CellType from "../../components/TableEdit/CellHelp";
 import TableEdit from "../../components/TableEdit/TableEdit";
 import Imgs from "../../components/Imgs";
+import {ImgType} from "../../components/Bucket";
 
 const columns = [
   {
@@ -20,24 +21,30 @@ const columns = [
 
 class ServiceSite extends React.Component {
   state = {
-    siteName: undefined,
-    Imgs: <div>选择左边的场地，进行场地图片上传！</div>
+    site: {},
   }
 
   constructor(props) {
     super(props);
   }
 
-  setImgs = (siteId, site) => {
+  setImgs = (_, site) => {
     this.setState({
-      siteName: site.name,
-      Imgs: TableEdit.isAutoKey(siteId) ? <div>请先保存场地信息！</div> : <Imgs/>
+      site,
+    });
+  }
+
+  onImgChange = (len, max, msg) => {
+    this.setState({
+      ...this.state,
+      msg,
     });
   }
 
   render() {
     const {service} = this.props;
     const shopServiceId = service.id || -1;
+    const {id, name} = this.state.site;
     return <Row>
       <Col span={11}>
         <RowContentRoute
@@ -58,8 +65,12 @@ class ServiceSite extends React.Component {
         />
       </Col>
       <Col span={11} push={2}>
-        <Divider>{this.state.siteName}【场地图片】</Divider>
-        {this.state.Imgs}
+        {
+          <Imgs title={`${name || ''}【场地图片】`} imgType={ImgType.SHOP_SITE} bsId={id} onChange={this.onImgChange}
+                content={id ? TableEdit.isAutoKey(id) ?
+                  <div>请先保存场地信息！</div> : undefined :
+                  <div>选择左边的场地，进行场地图片上传！</div>}/>
+        }
       </Col>
     </Row>
   }

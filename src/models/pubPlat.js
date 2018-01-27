@@ -1,21 +1,8 @@
 import {platService} from '../utils/request';
-import {dictCache, storage} from '../utils/util';
-
-function* storageService(key, call, fn, ...args) {
-  let _s = storage(key);
-  if (_s) {
-    return _s;
-  } else {
-    _s = (yield call(fn, ...args)).response;
-    if (_s) {
-      storage(key, _s);
-    }
-    return _s;
-  }
-}
+import {dictCache, storageService} from '../utils/util';
 
 export default {
-  namespace: 'plat',
+  namespace: 'pubPlat',
   state: {},
   reducers: {},
   effects: {

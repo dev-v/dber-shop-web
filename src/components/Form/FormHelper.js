@@ -1,5 +1,6 @@
 import {isBlank} from "../../utils/util";
 import {Form} from 'antd';
+import moment from 'moment';
 
 const COL = {
   labelCol: {
@@ -11,11 +12,11 @@ const COL = {
 }
 
 const COL_INLINE = {
-  className:'col-inline',
+  className: 'col-inline',
 }
 
 const COL_INLINE_BUTTON = {
-  className:'col-inline-btn'
+  className: 'col-inline-btn'
 }
 
 const COL_BUTTON = {
@@ -24,7 +25,23 @@ const COL_BUTTON = {
   }
 }
 
+const COL_2_1 = {
+  labelCol: {
+    span: 4,
+  },
+  wrapperCol: {
+    span: 20,
+  }
+}
+
+const COL_2_1_BUTTON = {
+  wrapperCol: {
+    offset: 4,
+  }
+}
+
 const FMT_TIME = 'HH:mm';
+const FMT_DATE = 'YYYY-MM-DD';
 
 const buildValuesChange = (values, value) => {
   if (values) {
@@ -68,14 +85,24 @@ const submit = (e, form, onSubmit) => {
   });
 }
 
+const getMinuteTime = (val) => moment(0).hour(0).minute(val || 0);
+
+const formatMinute = (val) => getMinuteTime(val).format(FMT_TIME);
+
+const getMinute = (time) => time ? (time.hour() * 60 + time.minute()) : 0;
+
+const getDate = (val) => val ? moment(val, FMT_DATE) : moment();
+
+const formatDate = (val) => (typeof val == 'string') ? val.split(' ')[0] : val.format(FMT_DATE);
+
 export {
-  COL,
-  COL_BUTTON,
-  COL_INLINE_BUTTON,
-  COL_INLINE,
+  COL, COL_BUTTON,
+  COL_INLINE, COL_INLINE_BUTTON,
+  COL_2_1, COL_2_1_BUTTON,
   FMT_TIME,
   mapPropsToForm,
   buildValuesChange,
   buildMapPropsToFields,
-  submit
+  submit,
+  FMT_DATE, getMinute, formatMinute, getMinuteTime, getDate, formatDate,
 };

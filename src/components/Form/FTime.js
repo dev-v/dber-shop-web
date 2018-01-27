@@ -1,29 +1,26 @@
 import {TimePicker} from 'antd';
-import moment from 'moment';
-import {FMT_TIME} from './FormHelper';
+import {FMT_TIME, formatMinute, getMinute, getMinuteTime} from './FormHelper';
 
 
 export default class FTime extends React.Component {
 
-  static format = (text, {format = FMT_TIME}) => {
-    return moment(text).format(format);
-  };
+  static format = formatMinute;
 
   constructor(props) {
     super(props);
-    this.state = {value: moment(props.value)};
-    props.onChange(this.state.value);
+    this.state = {value: getMinuteTime(props.value)};
+    props.onChange(getMinute(this.state.value));
   }
 
   setValue(value) {
     this.setState({value});
-    this.props.onChange(value);
+    this.props.onChange(getMinute(value));
   }
 
   render() {
-    const {size} = this.props;
+    const {size, format = FMT_TIME} = this.props;
     return (
-      <TimePicker size={size} value={this.state.value} format={FMT_TIME} onChange={(time) => {
+      <TimePicker size={size} value={this.state.value} format={format} onChange={(time) => {
         this.setValue(time);
       }}/>);
   }

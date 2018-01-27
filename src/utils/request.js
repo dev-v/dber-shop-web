@@ -9,6 +9,7 @@ function checkSystemStatus(response) {
     return response;
   } else if (code == 600) {//请求登录
     removeStorage('login');
+    removeStorage('global');
     location.pathname = '/user/login';
   } else {
     throw new Error(response.msg);
@@ -42,12 +43,6 @@ class WrapService {
     this.baseUrl = baseUrl;
   }
 
-  /**
-   * 同步请求
-   * @param path
-   * @param options
-   * @returns {*}
-   */
   request = (path, options) => {
     return request(`${this.baseUrl}${path}`,
       //此处后续需研究 same-origin
@@ -58,11 +53,11 @@ class WrapService {
     return this.baseUrl + path;
   }
 
-  get = async (path) => {
-    return await this.request(path);
+  get = (path) => {
+    return this.request(path);
   };
 
-  post = async (path, data) => {
+  post = (path, data) => {
     let body = '';
     if (typeof data == 'object') {
       data = JSON.parse(JSON.stringify(data));
@@ -88,7 +83,7 @@ class WrapService {
       body = encodeURI(data);
     }
 
-    return await this.request(path, {
+    return this.request(path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -96,12 +91,24 @@ class WrapService {
       body,
     });
   };
+
+  syncGet = async (path) => await this.get(path);
+
+  syncPost = async (path, data) => await this.post(path, data);
 }
 
 const shopService = new WrapService('http://localhost:8080/');
 
 const platService = new WrapService('http://localhost:8081/');
 
-const loginService = shopService;
+const uploadService = new WrapService('http://localhost:8100/');
 
-export {loginService, shopService, platService};
+const selfService = shopService;
+
+const loginService = selfService;
+
+const uploadTokenUrl = (imgType, bsId) => selfService.getUrl(`token/upload/${imgType}/${bsId}`);
+const downloadTokenUrl = selfService.getUrl('token/download');
+
+
+export {loginService, selfService, platService, uploadService, shopService, uploadTokenUrl, downloadTokenUrl};

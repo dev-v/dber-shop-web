@@ -1,0 +1,23 @@
+.dberSliderDisabled {
+  position: absolute;
+  z-index: 8;
+  top: -6px;
+  padding: 10px 0px;
+  .slider {
+    height: 4px;
+    border-radius: 4px;
+    background-color: #ffa39e;
+    -webkit-transition: background-color 0.3s ease;
+    -o-transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease;
+    visibility: visible;
+  }
+}
+
+:global(.ant-slider-handle) {
+  z-index: 9;
+}
+
+:global(.ant-slider-dot) {
+  z-index: 9;
+}

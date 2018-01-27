@@ -38,6 +38,7 @@ export default class ContentSwitch extends React.Component {
   }
 
   componentWillUnmount() {
+    nProgress.done();
   }
 
   constructor(props) {

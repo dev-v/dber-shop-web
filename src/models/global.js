@@ -1,4 +1,4 @@
-import {shopService} from '../utils/request';
+import {selfService} from '../utils/request';
 import {storage} from '../utils/util';
 import {message} from 'antd';
 
@@ -8,7 +8,7 @@ export default {
   reducers: {},
   effects: {
     * getShop(_, {call}) {
-      const result = yield call(shopService.get, `shop/get/${storage('login').accountId}`);
+      const result = yield call(selfService.get, `shop/get/${storage('login').accountId}`);
       if (result.code != 200) {
         message.error(result.msg);
       } else {

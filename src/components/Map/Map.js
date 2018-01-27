@@ -1,8 +1,62 @@
-import MapLoader from './MapLoader';
-import {Spin, message} from 'antd';
+import {message, Spin} from 'antd';
 import React from 'react';
 import './Map.less';
 import mapPin from '../../assets/map-pin1.png';
+import scriptLoader from '../../utils/ScriptLoader';
+
+const DEFAULT_MAP_CONFIG = {
+  v: '1.4.3',
+  hostAndPath: 'webapi.amap.com/maps',
+  key: '56ead169edd46d72e1dc0b2530f4be8f',
+  callback: '__amap_init_callback',
+  useAMapUI: true
+}
+
+let mainPromise = null
+let amapuiPromise = null
+let amapuiInited = false
+
+class MapLoader {
+  constructor({useAMapUI}) {
+    this.config = {...DEFAULT_MAP_CONFIG, useAMapUI}
+  }
+
+  getMainPromise() {
+    const cfg = this.config;
+    return scriptLoader.load(`//${cfg.hostAndPath}?v=${cfg.v}&key=${cfg.key}&callback=${cfg.callback}`, resolve => {
+      window[this.config.callback] = () => {
+        resolve();
+        delete window[this.config.callback]
+      }
+    })
+  }
+
+  loadMap() {
+    if (typeof window === 'undefined') {
+      return null
+    }
+    const {useAMapUI} = this.config
+    mainPromise = mainPromise || this.getMainPromise()
+    if (useAMapUI) {
+      amapuiPromise = amapuiPromise || scriptLoader.load('//webapi.amap.com/ui/1.0/main-async.js')
+    }
+    return new Promise(resolve => {
+      mainPromise.then(() => {
+        if (useAMapUI && amapuiPromise) {
+          amapuiPromise.then(() => {
+            if (window.initAMapUI && !amapuiInited) {
+              window.initAMapUI()
+              amapuiInited = true
+            }
+            resolve()
+          })
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
+}
 
 const DEFAULT_CONFIG = {
   zoom: 18,
@@ -88,7 +142,7 @@ export default class Map extends React.PureComponent {
   constructor(props) {
     super(props);
     Object.assign(this.events, props.events);
-    new MapLoader({useAMapUI: true}).load().then(() => {
+    new MapLoader({useAMapUI: true}).loadMap().then(() => {
       const map = this.map = new AMap.Map(this.container, DEFAULT_CONFIG);
       this.state.zoom = map.getZoom();
       AMap.event.addListener(map, 'zoomchange', this.zoomchange);

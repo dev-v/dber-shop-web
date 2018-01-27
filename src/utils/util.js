@@ -1,8 +1,19 @@
 import {platService} from './request';
 
-const isBlank = (val) => {
-  return val != 0 && (!val || (typeof val == 'string' && !(val = val.trim())));
+const storageService = function* storageService(key, call, fn, ...args) {
+  let _s = storage(key);
+  if (_s) {
+    return _s;
+  } else {
+    _s = (yield call(fn, ...args)).response;
+    if (_s) {
+      storage(key, _s);
+    }
+    return _s;
+  }
 }
+
+const isBlank = val => (val == 0 && typeof val == 'string') || (!val && val != 0);
 
 const storage = (key, val) => {
   const type = typeof val;
@@ -12,26 +23,31 @@ const storage = (key, val) => {
       if (old) {
         val = Object.assign(JSON.parse(old), val);
       }
+      window.localStorage.setItem(key, JSON.stringify(val));
+    } else {
+      window.localStorage.setItem(key, val);
     }
-    window.localStorage.setItem(key, JSON.stringify(val));
     return val;
   }
-  return JSON.parse(window.localStorage.getItem(key));
+
+  val = window.localStorage.getItem(key);
+
+  if (val) {
+    if (val.startsWith('{') || val.startsWith('[')) {
+      return JSON.parse(val);
+    } else {
+      const num = Number(val);
+      return isNaN(num) ? val : num;
+    }
+  }
 }
 
-const removeStorage = (key) => {
-  window.localStorage.removeItem('login');
-}
+const removeStorage = key => window.localStorage.removeItem(key);
 
-const clearStorage = () => {
-  window.localStorage.clear();
-}
-
+const clearStorage = () => window.localStorage.clear();
 
 class DictCache {
-  getDictKey = (categoryId) => {
-    return `_plat_dict_${categoryId}`;
-  }
+  getDictKey = categoryId => `_plat_dict_${categoryId}`;
 
   /**
    * @param categoryId
@@ -68,21 +84,20 @@ class DictCache {
 
 const dictCache = new DictCache();
 
-const run = async (fns) => {
-  const reses = [];
-  if (Array.isArray(fns)) {
-    const ps = [];
-    for (let idx in fns) {
-      let [fn, ...args] = fns[idx];
-      ps.push(fn(...args));
-    }
-    for (let idx in ps) {
-      await ps[idx].then((res) => {
-        reses.push(res);
+const runs = async (...promises) => {
+  const rest = [];
+  let p;
+  for (let idx in promises) {
+    p = promises[idx];
+    if (p.then) {
+      await p.then((res) => {
+        rest.push(res);
       });
+    } else {
+      rest.push(p)
     }
   }
-  return reses;
+  return rest;
 }
 
 const isSame = (s, t) => {
@@ -122,4 +137,4 @@ const pickField = (arr, field = 'id') => {
   }
   return fs;
 }
-export {dictCache, isBlank, storage, clearStorage, removeStorage, run, isSame, toObj,pickField};
+export {dictCache, isBlank, storage, clearStorage, removeStorage, isSame, toObj, pickField, storageService, runs};

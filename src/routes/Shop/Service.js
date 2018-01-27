@@ -1,6 +1,6 @@
 import {connect} from 'dva';
-import {Card, message, Tabs} from 'antd';
-import {dictCache, run  } from '../../utils/util';
+import {Alert, message, Tabs} from 'antd';
+import {dictCache, runs} from '../../utils/util';
 import {DictCategory} from "../../components/TableEdit/CellHelp";
 import ServiceForm from './ServiceForm';
 import TagButton from "../../components/Form/TagButton";
@@ -16,11 +16,11 @@ class Service extends React.PureComponent {
   }
 
   componentWillMount() {
-    run([[this.props.dispatch, {
+    runs(this.props.dispatch({
       type: 'service/queryWithoutPage',
-    }], [this.props.dispatch, {
-      type: 'plat/getService',
-    }], [dictCache.getDict, DictCategory.fitnessType]]).then(([shopService, allService, serviceType]) => {
+    }), this.props.dispatch({
+      type: 'pubPlat/getService',
+    }), dictCache.getDict(DictCategory.fitnessType)).then(([shopService, allService, serviceType]) => {
       this.initService(serviceType, allService, shopService);
     });
   }
@@ -54,7 +54,7 @@ class Service extends React.PureComponent {
     }).then((data) => {
       this.state.service.shopService = data;
       this.state.service.setting = true;
-      this.setState({...this.state});
+      this.setState({...this.state, service: {...this.state.service}});
       message.success('保存成功！');
     });
   }
@@ -75,6 +75,8 @@ class Service extends React.PureComponent {
         serviceName: name,
         serviceId: id,
         group: group,
+        price: 1,
+        groupPrice: 0.0001,
         coach: 1,
         shareSite: shareSite == 1 ? 1 : 2,
       };
@@ -89,7 +91,7 @@ class Service extends React.PureComponent {
   render() {
     const {types, service} = this.state;
     return <div>
-      <Tabs defaultActiveKey="aaaaaa">
+      <Tabs>
         {
           Object.keys(types).map((val) => {
             const {label, services} = types[val];
@@ -102,9 +104,9 @@ class Service extends React.PureComponent {
         }
       </Tabs>
       {service ?
-        <ServiceForm onSubmit={this.onSubmit} values={service}/>
-        :
-        <Card>您可以单击选择一项服务进行设置</Card>}
+        <ServiceForm onSubmit={this.onSubmit} values={service}/> :
+        <Alert message='您可以选择上面的服务进行详细服务设置！' style={{marginTop: '16px'}}/>
+      }
     </div>
   }
 }

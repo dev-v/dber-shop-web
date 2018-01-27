@@ -1,58 +1,22 @@
-import {Select} from 'antd';
-import {PureComponent} from 'react';
 import {dictCache} from '../../utils/util';
+import FSelect from "./FSelect";
 
-export default class DictSelect extends PureComponent {
+export default class DictSelect extends FSelect {
 
-  constructor(props) {
-    super(props);
-    this.state = {value: props.value};
-    this.init(props);
-  }
-
-  init = ({categoryId}) => {
-    dictCache.getDict(categoryId, (dict, remote) => {
-      const {opts, firstVal} = this.getOptions(dict);
-      if (firstVal) {// 有数据的行为
-        this.opts = opts;
-        let value;
-        if (this.state.value) {
-          value = dict[this.state.value];
-        } else {
-          value = dict[firstVal];
-          this.props.onChange(firstVal);
-        }
-        if (remote) {
-          this.setState({value});
-        } else {
-          this.state.value = value;
-        }
-      }
-    });
-  };
-
-  setValue = (value) => {
-    this.setState({value,});
-    this.props.onChange(value);
-  };
-
-  getOptions(dict) {
-    const opts = [];
-    let firstVal;
-    for (let val in dict) {
-      opts.push(<Select.Option key={val} value={val}>{dict[val]}</Select.Option>);
-      if (!firstVal) {
-        firstVal = val;
-      }
+  static dictToArr = (dict) => {
+    const arr = [];
+    for (let k in dict) {
+      arr.push({id: k, name: dict[k]});
     }
-    return {opts, firstVal};
+    return arr;
   }
 
-  render() {
-    const {size} = this.props;
-    return (
-      <Select size={size} style={{minWidth: 100}} value={this.state.value} onChange={this.setValue}>
-        {this.opts}
-      </Select>);
+  componentWillMount() {
+    dictCache.getDict(this.props.categoryId, (dict) => {
+      this.setState({
+        ...this.state,
+        opts: this.getOptions(DictSelect.dictToArr(dict)),
+      });
+    });
   }
 };

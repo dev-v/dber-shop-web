@@ -10,6 +10,7 @@ const menuClick = {
   logout: () => {
     loginService.get('/login/logout').then(() => {
       removeStorage('login');
+      removeStorage('global');
       location.pathname = '/';
     });
   }

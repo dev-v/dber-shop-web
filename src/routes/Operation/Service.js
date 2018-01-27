@@ -55,10 +55,6 @@ const columns = [
 
 class Service extends React.Component {
 
-  toggleEnable = (s) => {
-    console.log(s)
-  }
-
   operations = [
     (record) => <a key='enabled' onClick={() => {
       record.status = record.status == 1 ? 2 : 1;

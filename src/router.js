@@ -1,16 +1,17 @@
 import React from 'react';
-import {Router, Switch, Route} from 'dva/router';
+import {Route, Router, Switch} from 'dva/router';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import {LocaleProvider} from 'antd';
-import {getUserIndex, getIndexPage, hasMenu, getNotFound} from './nav/Component';
+import {getIndexPage, getNotFound, getUserIndex, hasMenu} from './nav/Component';
 import {connect} from 'dva';
 import {storage} from './utils/util';
 
 const removePreloader = () => {
-  let preloader = document.getElementById('preloader');
-  if (preloader) {
-    setTimeout(() => {
-      preloader.remove();
+  const pre = document.getElementById('preloader');
+  if (pre) {
+    const time = setTimeout(() => {
+      clearTimeout(time);
+      pre.remove();
     }, 500);
   }
 }
@@ -44,7 +45,7 @@ class RootRoute extends React.PureComponent {
       this.state.component = this.getComponent();
       removePreloader();
     } else {
-      props.dispatch({type: 'login/getLogin'}).then((data) => {
+      props.dispatch({type: 'login/getLogin'}).then(() => {
         this.setState({
           component: this.getComponent()
         });

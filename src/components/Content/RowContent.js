@@ -28,7 +28,7 @@ export default class RowContent extends PureComponent {
   constructor(props) {
     super(props);
     this._props = {..._default, ...props};
-
+    Object.assign(this.toolbar, props.toolbar);
     const {
       edit, query, del, addModel = {editable: true},
     } = props;
@@ -119,7 +119,7 @@ export default class RowContent extends PureComponent {
 
   query = (page, data) => {
     if (this._custom.query) {
-      this._custom.query(page || this.state.currentPage, {...this.props.queryParams,...data}).then((data) => {
+      this._custom.query(page || this.state.currentPage, {...this.props.queryParams, ...data}).then((data) => {
         if (data) {
           this.setState({...data});
         }
@@ -131,7 +131,8 @@ export default class RowContent extends PureComponent {
     if (this.props.datas) {
       this.state.datas = this.props.datas;
     }
-    if (!isSame(this._props.addModel, this.props.addModel)) {
+    const {addModel} = this.props;
+    if (addModel && !isSame(this._props.addModel, this.props.addModel)) {
       this._props.addModel = this.props.addModel;
       this.query(1);
     }

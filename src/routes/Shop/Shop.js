@@ -5,8 +5,6 @@ import ShopForm from './ShopForm';
 import Map from '../../components/Map/Map';
 import {storage} from '../../utils/util';
 
-const modelName = 'shop';
-
 class Shop extends React.Component {
   state = {
     notShop: true,

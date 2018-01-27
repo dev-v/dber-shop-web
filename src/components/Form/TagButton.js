@@ -44,8 +44,8 @@ export default class TagButton extends PureComponent {
   }
 
   render() {
-    const {tags = []} = this.state;
-    return <Card>
+    const {tags = [], bordered = true} = this.state;
+    return <Card bordered={bordered}>
       {tags.map((tag) => {
         const color = tag._active ? '#f50' : this.isSetting(tag) ? '#2db7f5' : '#bfbfbf';
         return <Tag color={color} key={tag[this.valueField]} onClick={() => {

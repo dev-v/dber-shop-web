@@ -27,6 +27,7 @@ const DictCategory = {
   accountType: 13,
   shopStatus: 14,
   fitnessShareSite: 15,
+  groupCourseBooking: 16,
 };
 
 export {CellType, DictCategory};

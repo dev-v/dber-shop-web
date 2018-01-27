@@ -2,12 +2,19 @@ export default [
   {
     title: '运营管理',
     path: 'operation',
+    icon: 'solution',
     children: [
+      {
+        title: '团体课程管理',
+        path: 'groupCourse',
+        icon: 'solution',
+        models: () => [import('../models/groupCourse'), import('../models/service'), import('../models/site'), import('../models/siteGroupBooking')],
+        component: () => import('../routes/Operation/GroupCourse'),
+      },
       {
         title: '服务管理',
         path: 'service',
         icon: 'solution',
-        selected: true,
         models: () => [import('../models/service')],
         component: () => import('../routes/Operation/Service'),
       },
@@ -19,7 +26,7 @@ export default [
       },],
   },
   {
-    title: '店铺管理',
+    title: '店铺设置',
     path: 'shop',
     icon: 'shop',
     children: [
@@ -27,6 +34,7 @@ export default [
         title: '服务设置',
         path: 'service',
         icon: 'solution',
+        selected: true,
         models: () => [import('../models/service'), import('../models/site')],
         component: () => import('../routes/Shop/Service'),
       },
@@ -36,6 +44,13 @@ export default [
         icon: 'profile',
         models: () => [import('../models/shop')],
         component: () => import('../routes/Shop/Shop'),
+      },
+      {
+        title: '共享场地设置',
+        path: 'shopSite',
+        icon: 'picture',
+        models: () => [import('../models/site')],
+        component: () => import('../routes/Shop/ShopSite'),
       },
       {
         title: '图片管理',
