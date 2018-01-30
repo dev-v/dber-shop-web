@@ -11,7 +11,7 @@ class Type {
 
 class ImgType {
   static SHOP = new Type(1, 1, true);
-  static SHOP_ENV = new Type(2, 100);
+  static SHOP_ENV = new Type(2, 100, true);
   static SHOP_SERVICE = new Type(3, 20, true);
   static COACHER_IDENTIFICATION = new Type(4, 1);
   static CUSTOMER_IDENTIFICATION = new Type(5, 1);
