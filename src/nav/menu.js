@@ -8,7 +8,7 @@ export default [
         title: '团体课程管理',
         path: 'groupCourse',
         icon: 'solution',
-        models: () => [import('../models/groupCourse'), import('../models/service'), import('../models/site'), import('../models/siteGroupBooking')],
+        models: () => [import('../models/groupCourse'), import('../models/service'), import('../models/site'), import('../models/shopGroup')],
         component: () => import('../routes/Operation/GroupCourse'),
       },
       {

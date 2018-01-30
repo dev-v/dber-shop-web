@@ -31,7 +31,7 @@ class GroupCourse extends React.Component {
     values.timeEnd = times[1];
     values.shopName = storage('global').shop.name;
     this.props.dispatch({
-      type: 'siteGroupBooking/save',
+      type: 'shopGroup/save',
       data: values,
     }).then(() => {
       message.success('保存成功！');
@@ -53,4 +53,4 @@ class GroupCourse extends React.Component {
   }
 }
 
-export default connect(({siteGroupBooking}) => ({siteGroupBooking}))(GroupCourse);
+export default connect(({shopGroup}) => ({shopGroup}))(GroupCourse);
