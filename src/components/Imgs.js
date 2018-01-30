@@ -65,7 +65,7 @@ export default class Imgs extends React.Component {
   onRemove = (file) => {
     Modal.confirm({
       title: '确定删除图片？',
-      okText: '确认',
+      okText: '确认', maskClosable: true,
       cancelText: '取消',
       onOk: () => {
         bucket.del(this.imgType, this.bsId, file.uid).then(res => {
