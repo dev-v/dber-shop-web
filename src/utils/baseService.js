@@ -16,10 +16,13 @@ export default {
   },
 };*/
 
-export default (service,namespace, serviceRootPath, methodNameSuffix = '') => {
+export default (service, namespace, serviceRootPath, methodNameSuffix = '') => {
   return {
     namespace,
     state: {},
+    service,
+    serviceRootPath,
+    methodNameSuffix,
     reducers: {},
     effects: {
       * [`query${methodNameSuffix}`]({page, condition}, {call}) {

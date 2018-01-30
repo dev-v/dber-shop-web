@@ -13,8 +13,8 @@ export default {
         message.error(result.msg);
       } else {
         storage('global', {shop: result.response});
+        return result.response;
       }
-      return result;
     },
   }
 }

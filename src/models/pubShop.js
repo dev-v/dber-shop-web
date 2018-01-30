@@ -9,5 +9,8 @@ export default {
       const result = yield call(shopService.post, 'pub/getSiteBookings', condition);
       return result.response;
     },
+    * getShopPosition({shopId}, {call}) {
+      return (yield call(shopService.get, `pub/getShopPosition/${shopId}`)).response;
+    },
   },
 }

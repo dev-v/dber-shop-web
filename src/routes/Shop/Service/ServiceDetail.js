@@ -1,8 +1,8 @@
 import {PureComponent} from 'react';
 import {Card} from 'antd';
-import Imgs from "../../components/Imgs";
+import Imgs from "../../../components/Imgs";
 import ServiceSite from './ServiceSite';
-import {ImgType} from "../../components/Bucket";
+import {ImgType} from "../../../components/Bucket";
 
 export default class ServiceDetail extends PureComponent {
   state = {msg: undefined};

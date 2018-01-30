@@ -53,7 +53,8 @@ export default class TableEdit extends React.Component {
 
     this._props = {..._default, ...props};
 
-    let {columns, operations = [], select, del, edit, pagination, onPage} = props;
+    let {operations = [], select, del, edit, pagination, onPage} = props;
+    let columns = [...props.columns];
 
     // 可行内编辑
     if (edit) {
@@ -157,16 +158,22 @@ export default class TableEdit extends React.Component {
   renderOperation = (item, record) => {
     const type = typeof item;
     if (type == 'object') {
-      return item.confirm ?
-        <Popconfirm okText="确定" cancelText="取消" key={item.text}
-                    title={item.confirm}
-                    onConfirm={() => item.onClick(record)}>
-          <a href="#">{item.text}</a>
-        </Popconfirm> :
-        <a key={item.text} onClick={() => item.onClick(record)}>{item.text}</a>
+      return this.renderObjOp(item, record);
     } else {//function
-      return item(record);
+      const res = item(record);
+      return (res.text && res.onClick) ? this.renderObjOp(res, record) : res;
     }
+  }
+
+  renderObjOp = (obj, record) => {
+    const {text, confirm, onClick} = obj;
+    return confirm ?
+      <Popconfirm okText="确定" cancelText="取消" key={text}
+                  title={confirm}
+                  onConfirm={() => onClick(record)}>
+        <a href="#">{text}</a>
+      </Popconfirm> :
+      <a key={text} onClick={() => obj.onClick(record)}>{text}</a>
   }
 
   getOperationColumn = (operations) => {

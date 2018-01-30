@@ -1,12 +1,9 @@
-import {
-  buildMapPropsToFields, buildValuesChange, COL_INLINE, COL_INLINE_BUTTON,
-  submit
-} from "../../components/Form/FormHelper";
+import {buildMapPropsToFields, buildValuesChange, COL_4, COL_BTN, submit} from "../../../components/Form/FormHelper";
 import {Button, Card, Form, InputNumber} from 'antd';
-import {required} from "../../utils/rules";
+import {required} from "../../../utils/rules";
 import {PureComponent} from 'react';
-import Show from "../../components/Form/Show";
-import YesNoSwitch from "../../components/Form/YesNoSwitch";
+import Show from "../../../components/Form/Show";
+import YesNoSwitch from "../../../components/Form/YesNoSwitch";
 import ServiceDetail from "./ServiceDetail";
 
 const FormItem = Form.Item;
@@ -22,7 +19,7 @@ class ServiceForm extends PureComponent {
         <Form layout='inline' onSubmit={(e) => {
           submit(e, form, onSubmit);
         }}>
-          <FormItem label='支持场地共享' {...COL_INLINE}>
+          <FormItem label='支持场地共享' {...COL_4}>
             {shareSite == 1 ? <Show label={'场地共享'}/> :
               shareSite == 2 ? <Show label={'需预定或预约'}/> :
                 getFieldDecorator('shareSite')(
@@ -32,33 +29,33 @@ class ServiceForm extends PureComponent {
           </FormItem>
 
           <FormItem style={{display: shopService.shareSite == 2 ? 'inline-block' : 'none',}}
-                    label='场地单价（每小时）'  {...COL_INLINE}>
+                    label='场地单价（每小时）'  {...COL_4}>
             {getFieldDecorator('price', {rules: [required]})(
               <InputNumber precision={2} min={1}/>
             )}
           </FormItem>
 
           {
-            group == 1 && <FormItem label='开设团体课程' {...COL_INLINE}>
+            group == 1 && <FormItem label='开设团体课程' {...COL_4}>
               {getFieldDecorator('group')(
                 <YesNoSwitch tip='开启后，可在团体课程设置中开设团体课程，团体课程可以额外收费（但不建议收费）！'/>
               )}
             </FormItem>
           }
 
-          <FormItem style={{display: shopService.group == 1 ? 'inline-block' : 'none',}} label='课程单价' {...COL_INLINE}>
+          <FormItem style={{display: shopService.group == 1 ? 'inline-block' : 'none',}} label='课程单价' {...COL_4}>
             {getFieldDecorator('groupPrice', {rules: [required]})(
               <InputNumber precision={2} min={0}/>
             )}
           </FormItem>
 
-          <FormItem label='允许私教授课' {...COL_INLINE}>
+          <FormItem label='允许私教授课' {...COL_4}>
             {getFieldDecorator('coach')(
               <YesNoSwitch tip='私教授课课时费的40-60%归店铺所有！'/>
             )}
           </FormItem>
 
-          <FormItem {...COL_INLINE_BUTTON}>
+          <FormItem {...COL_BTN}>
             <Button type='primary' htmlType='submit'>保存</Button>
           </FormItem>
         </Form>

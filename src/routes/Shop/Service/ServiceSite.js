@@ -1,10 +1,10 @@
 import {connect} from 'dva';
 import {Col, Row} from 'antd';
-import RowContentRoute from "../Content/RowContentRoute";
-import CellType from "../../components/TableEdit/CellHelp";
-import TableEdit from "../../components/TableEdit/TableEdit";
-import Imgs from "../../components/Imgs";
-import {ImgType} from "../../components/Bucket";
+import RowContentRoute from "../../Content/RowContentRoute";
+import CellType from "../../../components/TableEdit/CellHelp";
+import TableEdit from "../../../components/TableEdit/TableEdit";
+import Imgs from "../../../components/Imgs";
+import {ImgType} from "../../../components/Bucket";
 
 const columns = [
   {

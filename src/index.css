@@ -23,13 +23,3 @@ html, body, :global(#root) {
   fill: currentColor;
   overflow: hidden;
 }
-
-:global(.col-inline) {
-  width: 24%;
-  margin-right: 1% !important;
-}
-
-:global(.col-inline-btn) {
-  width: 99%;
-  padding-top: 8px !important;
-}

@@ -1,9 +1,9 @@
 import {connect} from 'dva';
 import {Alert, message, Tabs} from 'antd';
-import {dictCache, runs} from '../../utils/util';
-import {DictCategory} from "../../components/TableEdit/CellHelp";
+import {dictCache, runs} from '../../../utils/util';
+import {DictCategory} from "../../../components/TableEdit/CellHelp";
 import ServiceForm from './ServiceForm';
-import TagButton from "../../components/Form/TagButton";
+import TagButton from "../../../components/Form/TagButton";
 
 const TabPane = Tabs.TabPane;
 

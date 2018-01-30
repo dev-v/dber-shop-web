@@ -5,6 +5,7 @@ import CellType, {DictCategory} from "../../components/TableEdit/CellHelp";
 import TableEdit from "../../components/TableEdit/TableEdit";
 import {runs, storage, toObj} from "../../utils/util";
 import VipCardService from './VipCardService';
+import CellDictRender from "../../components/TableEdit/CellDictRender";
 
 const columns = [
   {
@@ -21,8 +22,8 @@ const columns = [
   {
     title: '是否启用',
     dataIndex: 'status',
-    categoryId: DictCategory.yesNo,
-    editable: CellType.dictSelect,
+    render: val => <CellDictRender categoryId={DictCategory.yesNo} value={val}/>,
+    editable: false,
   },
   {
     title: '可使用天数',
@@ -80,18 +81,30 @@ class VipCard extends React.Component {
   setServices = (cardId, card) => {
     if (TableEdit.isAutoKey(cardId)) {
       delete card.id;
-      this.props.dispatch({
-        type: 'vipCard/save',
-        data: card,
-      }).then((data) => {
-        Object.assign(card, data);
-        this.state.selectedRowKeys.splice(0, 1, data.id);
-        this.setState({card});
-      });
+      this.saveServices(card);
     } else {
       this.setState({card});
     }
   }
+
+  saveServices = (card) => {
+    this.props.dispatch({
+      type: 'vipCard/save',
+      data: card,
+    }).then((data) => {
+      Object.assign(card, data);
+      this.state.selectedRowKeys.splice(0, 1, data.id);
+      this.setState({card});
+    });
+  }
+
+  enDisable = (record) => ({
+    text: record.status == 1 ? '停用' : '启用',
+    onClick: () => {
+      record.status = record.status == 1 ? 2 : 1;
+      this.saveServices(record);
+    }
+  })
 
   render() {
     const shopId = storage('login').accountId;
@@ -112,6 +125,7 @@ class VipCard extends React.Component {
             pagination={false}
             del={false}
             save={{toolBar: false,}}
+            operations={[this.enDisable]}
           />
         </Col>
         <Col span={7} push={1}>

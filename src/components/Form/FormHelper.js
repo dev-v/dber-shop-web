@@ -1,42 +1,54 @@
 import {isBlank} from "../../utils/util";
 import {Form} from 'antd';
 import moment from 'moment';
+import './Form.less';
 
-const COL = {
+const COL_LBL_4 = {
   labelCol: {
+    span: 12,
+  },
+  wrapperCol: {
     span: 8,
+  }
+}
+
+const COL_LBL_2 = {
+  labelCol: {
+    span: 6,
   },
   wrapperCol: {
     span: 16,
   }
 }
 
-const COL_INLINE = {
-  className: 'col-inline',
-}
-
-const COL_INLINE_BUTTON = {
-  className: 'col-inline-btn'
-}
-
-const COL_BUTTON = {
-  wrapperCol: {
-    offset: 8,
-  }
-}
-
-const COL_2_1 = {
+const COL_LBL_1 = {
   labelCol: {
-    span: 4,
+    span: 3,
   },
   wrapperCol: {
     span: 20,
   }
 }
 
-const COL_2_1_BUTTON = {
+const COL_4 = {
+  className: 'col-inline-4',
+  ...COL_LBL_4,
+}
+
+const COL_2 = {
+  className: 'col-inline-2',
+  ...COL_LBL_2,
+}
+
+const COL_1 = {
+  className: 'col-inline-1',
+  ...COL_LBL_1,
+}
+
+const COL_BTN = {
+  className: 'col-inline-btn',
   wrapperCol: {
-    offset: 4,
+    offset: 3,
   }
 }
 
@@ -96,9 +108,8 @@ const getDate = (val) => val ? moment(val, FMT_DATE) : moment();
 const formatDate = (val) => (typeof val == 'string') ? val.split(' ')[0] : val.format(FMT_DATE);
 
 export {
-  COL, COL_BUTTON,
-  COL_INLINE, COL_INLINE_BUTTON,
-  COL_2_1, COL_2_1_BUTTON,
+  COL_1, COL_2, COL_4, COL_BTN,
+  COL_LBL_2, COL_LBL_4,
   FMT_TIME,
   mapPropsToForm,
   buildValuesChange,

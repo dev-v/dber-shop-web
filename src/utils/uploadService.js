@@ -1,8 +1,6 @@
 import {platService} from '../utils/request';
 import {storageService} from '../utils/util';
 
-
-
 export default {
   namespace: 'pubUpload',
   state: {},

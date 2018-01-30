@@ -15,6 +15,7 @@ const DEFAULT_MAP_CONFIG = {
 let mainPromise = null
 let amapuiPromise = null
 let amapuiInited = false
+const locationDigit = 1000000;
 
 class MapLoader {
   constructor({useAMapUI}) {
@@ -94,7 +95,7 @@ const plugins = {
   }
 };
 
-const geolocationMax = 2;//获取定位信息失败最大重试次数
+const geolocationMax = 1;//获取定位信息失败最大重试次数
 
 
 export default class Map extends React.PureComponent {
@@ -129,21 +130,27 @@ export default class Map extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    this.map.destroy();
+    this.map && this.map.destroy();
   }
 
   state = {
     geolocation: undefined,//用户当前位置 GeolocationResult对象
     position: undefined,//地图中心点位置信息 positionPickerResult对象
     bounds: undefined,//地图可视范围
+    location: [],//用户当前经纬度信息（已转换为整形）
     zoom: undefined,//当前可视级别
   }
 
   constructor(props) {
     super(props);
-    Object.assign(this.events, props.events);
+    const {events, location} = props;
+    Object.assign(this.events, events);
+    this.state.location = location;
     new MapLoader({useAMapUI: true}).loadMap().then(() => {
-      const map = this.map = new AMap.Map(this.container, DEFAULT_CONFIG);
+      const map = this.map = new AMap.Map(this.container, {
+        ...DEFAULT_CONFIG,
+        center: location && new AMap.LngLat(location[0] / locationDigit, location[1] / locationDigit),
+      });
       this.state.zoom = map.getZoom();
       AMap.event.addListener(map, 'zoomchange', this.zoomchange);
       // AMap.event.addListener(map, 'movestart', this.zoomchange);
@@ -167,9 +174,12 @@ export default class Map extends React.PureComponent {
     this.state.bounds = this.map.getBounds();
   }
 
+
   positionPickerSuccess = (result) => {
+    const {lng, lat} = result.position;
     this.state.position = result;
     this.state.bounds = this.map.getBounds();
+    this.state.location = [lng * locationDigit, lat * locationDigit];
     this.events.positionChange({...this.state});
   }
 
@@ -199,7 +209,7 @@ export default class Map extends React.PureComponent {
       this.map.addControl(geolocation);
       AMap.event.addListener(geolocation, 'complete', this.geolocationComplete);
       AMap.event.addListener(geolocation, 'error', this.geolocationError);
-      geolocation.getCurrentPosition();
+      this.state.location || geolocation.getCurrentPosition();
     });
   }
 
