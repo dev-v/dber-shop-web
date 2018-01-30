@@ -10,7 +10,7 @@ class Business extends React.Component {
     const {status, basePrice} = values;
     const minPrice = 0.7 * basePrice, maxPrice = 1.3 * basePrice;
     return <div>
-      {status == 41 && <Alert type='warning' message='您的店铺已申请核对成功，现在去设置或启用服务，开始营业吧！'/>}
+      {status == 41 && <Alert type='warning' message='您的店铺已核对成功，现在去设置或启用服务，开始营业吧！'/>}
       <Form layout={'inline'} onSubmit={(e) => {
         submit(e, form, setPrice);
       }}>

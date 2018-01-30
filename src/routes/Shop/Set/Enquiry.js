@@ -1,5 +1,5 @@
 import {Alert, Button, Card, Form, InputNumber} from 'antd';
-import {COL_2 as COL, COL_BTN, mapPropsToForm, submit} from "../../../components/Form/FormHelper";
+import {COL_4, mapPropsToForm, submit} from "../../../components/Form/FormHelper";
 import {required} from "../../../utils/rules";
 
 class Enquiry extends React.Component {
@@ -16,20 +16,14 @@ class Enquiry extends React.Component {
           <Form layout='inline' onSubmit={(e) => {
             submit(e, form, onSubmit);
           }}>
-            {
-              basePrice &&
-              <Form.Item label='建议门店价格范围（元）' {...COL}>
-                <span>{`${basePrice * 0.7}  -  ${basePrice * 1.3}`}</span>
-              </Form.Item>
-            }
-            <Form.Item label='期望门店价格（元）' {...COL}>
+            <Form.Item label='期望门店价格（元）' {...COL_4}>
               {getFieldDecorator('expectPrice', {
                 rules: [required],
               })(
-                <InputNumber precision={2}/>
+                <InputNumber precision={2} min={5}/>
               )}
             </Form.Item>
-            <Form.Item {...COL_BTN}>
+            <Form.Item {...COL_4}>
               <Button type='primary' htmlType='submit'>提交</Button>
             </Form.Item>
           </Form></Card></div>)

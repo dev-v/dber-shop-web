@@ -50,7 +50,7 @@ class Shop extends React.Component {
       message.success(msg);
       this.caculateStatus();
     });
-    if (status == 11 || status == 41 || status == 42) {
+    if (status == 11 ||status == 22 || status == 41 || status == 42) {
       this.savePosition();
     }
   }
@@ -70,9 +70,13 @@ class Shop extends React.Component {
   }
 
   savePosition = () => {
+    const {name, position} = this.state.shop;
     this.props.dispatch({
       type: 'shopPosition/save',
-      data: this.state.shop.position,
+      data: {
+        ...position,
+        name,
+      },
     });
   }
 
